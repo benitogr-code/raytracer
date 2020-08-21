@@ -19,14 +19,28 @@ std::string colorToString(const ColorRGB& c) {
     return ss.str();
 }
 
-ColorRGB normalToColor(const Vec3& n) {
-    return 0.5f * ColorRGB(n.x + 1.0f, n.y + 1.0f, n.z + 1.0f);
+Vec3 randUnitVector() {
+    const float a = Math::randf(0.0f, 2.0f*Math::Pi);
+    const float z = Math::randf(-1.0f, 1.0f);
+    const float r = sqrt(1.0f - z*z);
+
+    return Vec3(r*cos(a), r*sin(a), z);
 }
 
-ColorRGB rayTrace(const Scene& scene, const Ray& ray) {
+ColorRGB gamma2(const ColorRGB& c) {
+    return ColorRGB(sqrt(c.r), sqrt(c.g), sqrt(c.b));
+}
+
+ColorRGB rayTrace(const Scene& scene, const Ray& ray, int bounces) {
+    if (bounces <= 0)
+        return ColorRGB(0.0f, 0.0f, 0.0f);
+
     HitInfo hit;
-    if (scene.rayTrace(ray, 0.0f, Math::MaxFloat, hit)) {
-        return normalToColor(hit.normal);
+    if (scene.rayTrace(ray, 0.0025f, Math::MaxFloat, hit)) {
+        const Vec3 randUnit = randUnitVector();
+        const Vec3 reflectTarget = hit.point + hit.normal + randUnit;
+
+        return 0.5f*rayTrace(scene, Ray(hit.point, Vec3::normalize(reflectTarget - hit.point)), bounces-1);
     }
 
     const float t = 0.5f*(ray.direction.y + 1.0f);
@@ -39,7 +53,9 @@ int main() {
     const float aspectRatio = 16.0f / 9.0f;
     const int imageWidth = 640;
     const int imageHeight = (int)(imageWidth / aspectRatio);
+
     const int perPixelSamples = 16;
+    const int maxBounces = 10;
 
     // Camera
     const Camera camera(aspectRatio);
@@ -67,10 +83,11 @@ int main() {
                 const float v = float(y + Math::randf()) / (imageHeight-1);
 
                 const Ray ray = camera.viewportRay(u, v);
-                pixel += rayTrace(scene, ray);
+                pixel += rayTrace(scene, ray, maxBounces);
             }
 
-            std::cout << colorToString(pixel * (1.0f/perPixelSamples)) << '\n';
+            const float scale = 1.0f / perPixelSamples;
+            std::cout << colorToString(gamma2(pixel*scale)) << '\n';
         }
     }
 

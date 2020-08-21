@@ -4,6 +4,30 @@
 #include <cmath>
 #include <cstdlib>
 
+// Misc /////
+
+namespace Math {
+    const float MaxFloat = std::numeric_limits<float>::infinity();
+    const float Pi = 3.1415926535897932385f;
+
+    template<typename T>
+    inline bool inRange(const T& value, const T& min, const T& max) {
+        return (value >= min) && (value <= max);
+    }
+
+    inline float randf() {
+        return (float)rand() / (float)(RAND_MAX + 1.0f);
+    }
+
+    inline float randf(float min, float max) {
+        return min + (max-min)*randf();
+    }
+
+    inline float clampf(float value, float min, float max) {
+        return std::max(min, std::min(value, max));
+    }
+}
+
 // Vec3 ///////////
 
 struct Vec3 {
@@ -70,6 +94,18 @@ struct Vec3 {
         return Vec3(x, y, z);
     }
 
+    static Vec3 random() {
+        return Vec3(Math::randf(), Math::randf(), Math::randf());
+    }
+
+    static Vec3 random(float min, float max) {
+        return Vec3(
+            Math::randf(min, max),
+            Math::randf(min, max),
+            Math::randf(min, max)
+        );
+    }
+
     union {
         struct { float x, y, z; };
         float _v[3];
@@ -90,28 +126,4 @@ inline Vec3 operator*(const Vec3& v, float f) {
 
 inline Vec3 operator*(float f, const Vec3 &v) {
     return Vec3(f*v.x, f*v.y, f*v.z);
-}
-
-// Misc /////
-
-namespace Math {
-    const float MaxFloat = std::numeric_limits<float>::infinity();
-    const float Pi = 3.1415926535897932385f;
-
-    template<typename T>
-    inline bool inRange(const T& value, const T& min, const T& max) {
-        return (value >= min) && (value <= max);
-    }
-
-    inline float randf() {
-        return rand() / (RAND_MAX + 1.0f);
-    }
-
-    inline float randf(float min, float max) {
-        return min + (max-min)*randf();
-    }
-
-    inline float clampf(float value, float min, float max) {
-        return std::max(min, std::min(value, max));
-    }
 }

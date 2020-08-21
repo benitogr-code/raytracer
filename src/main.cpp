@@ -3,15 +3,16 @@
 
 #include "common/color.h"
 #include "common/geometry.h"
+#include "scene/Camera.h"
 #include "scene/Scene.h"
 #include "scene/SphereEntity.h"
 
 std::string colorToString(const ColorRGB& c) {
     std::stringstream ss;
 
-    int r = static_cast<int>(255.999f * c.r);
-    int g = static_cast<int>(255.999f * c.g);
-    int b = static_cast<int>(255.999f * c.b);
+    int r = static_cast<int>(256 * Math::clampf(c.r, 0.0f, 0.99999f));
+    int g = static_cast<int>(256 * Math::clampf(c.g, 0.0f, 0.99999f));
+    int b = static_cast<int>(256 * Math::clampf(c.b, 0.0f, 0.99999f));
 
     ss << r << ' ' << g << ' ' << b;
 
@@ -38,16 +39,10 @@ int main() {
     const float aspectRatio = 16.0f / 9.0f;
     const int imageWidth = 640;
     const int imageHeight = (int)(imageWidth / aspectRatio);
+    const int perPixelSamples = 16;
 
     // Camera
-    const float viewPortHeight = 2.0f;
-    const float viewPortWidth = viewPortHeight * aspectRatio;
-    const float focalLength = 1.0f;
-
-    const Vec3 origin(0.0f, 0.0f, 0.0f);
-    const Vec3 horizontal(viewPortWidth, 0.0f, 0.0f);
-    const Vec3 vertical(0.0f, viewPortHeight, 0.0f);
-    const Vec3 viewPortBottomLeft = origin - Vec3(viewPortWidth/2.0f, viewPortHeight/2.0f, focalLength);
+    const Camera camera(aspectRatio);
 
     // Scene
     Scene scene;
@@ -63,14 +58,19 @@ int main() {
 
     for (int y = imageHeight-1; y >= 0; --y) {
         std::cerr << "Scanning line: " << (imageHeight-y) << std::endl;
+
         for (int x = 0; x < imageWidth; ++x) {
-            const float u = float(x) / (imageWidth-1);
-            const float v = float(y) / (imageHeight-1);
+            ColorRGB pixel(0.0f, 0.0f, 0.0f);
 
-            const Ray ray(origin, Vec3::normalize(viewPortBottomLeft + u*horizontal + v*vertical - origin));
-            const ColorRGB pixelColor = rayTrace(scene, ray);
+            for (int s = 0; s < perPixelSamples; ++s) {
+                const float u = float(x + Math::randf()) / (imageWidth-1);
+                const float v = float(y + Math::randf()) / (imageHeight-1);
 
-            std::cout << colorToString(pixelColor) << '\n';
+                const Ray ray = camera.viewportRay(u, v);
+                pixel += rayTrace(scene, ray);
+            }
+
+            std::cout << colorToString(pixel * (1.0f/perPixelSamples)) << '\n';
         }
     }
 

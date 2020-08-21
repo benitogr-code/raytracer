@@ -1,6 +1,8 @@
 #pragma once
 
+#include <algorithm>
 #include <cmath>
+#include <cstdlib>
 
 // Vec3 ///////////
 
@@ -99,5 +101,17 @@ namespace Math {
     template<typename T>
     inline bool inRange(const T& value, const T& min, const T& max) {
         return (value >= min) && (value <= max);
+    }
+
+    inline float randf() {
+        return rand() / (RAND_MAX + 1.0f);
+    }
+
+    inline float randf(float min, float max) {
+        return min + (max-min)*randf();
+    }
+
+    inline float clampf(float value, float min, float max) {
+        return std::max(min, std::min(value, max));
     }
 }

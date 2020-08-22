@@ -25,7 +25,7 @@ bool SphereEntity::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) 
         const auto normal = (point - _sphere.center) / _sphere.radius;
         const auto frontFace = HitInfo::isFrontFace(ray, normal);
 
-        outHit.point = ray.pointAt(t1);
+        outHit.point = point;
         outHit.t = t1;
         outHit.normal = frontFace ? normal : -normal;
         outHit.frontFace = frontFace;
@@ -40,7 +40,7 @@ bool SphereEntity::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) 
         const auto normal = (point - _sphere.center) / _sphere.radius;
         const auto frontFace = HitInfo::isFrontFace(ray, normal);
 
-        outHit.point = ray.pointAt(t1);
+        outHit.point = point;
         outHit.t = t2;
         outHit.normal = frontFace ? normal : -normal;
         outHit.frontFace = frontFace;

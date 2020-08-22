@@ -11,12 +11,17 @@ include_directories ("${PROJECT_SOURCE_DIR}/src")
 set(APP_SOURCES
 	src/common/color.h
 	src/common/geometry.h
+	src/common/hitInfo.h
+	src/common/material.h
 	src/common/math.h
-	src/scene/IEntity.h
-	src/scene/Scene.h
-	src/scene/Scene.cpp
-	src/scene/SphereEntity.h
-	src/scene/SphereEntity.cpp
+	src/scene/materials/lambertian.h
+	src/scene/materials/lambertian.cpp
+	src/scene/camera.h
+	src/scene/entity.h
+	src/scene/scene.h
+	src/scene/scene.cpp
+	src/scene/sphereEntity.h
+	src/scene/sphereEntity.cpp
 	src/main.cpp
 )
 

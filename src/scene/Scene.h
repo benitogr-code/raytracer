@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "IEntity.h"
+#include "entity.h"
 
 class Scene {
 private:

@@ -3,11 +3,12 @@
 
 #include "common/color.h"
 #include "common/geometry.h"
-#include "scene/Camera.h"
-#include "scene/Scene.h"
-#include "scene/SphereEntity.h"
+#include "scene/materials/lambertian.h"
+#include "scene/camera.h"
+#include "scene/scene.h"
+#include "scene/sphereEntity.h"
 
-std::string colorToString(const ColorRGB& c) {
+std::string colorToString(const Color& c) {
     std::stringstream ss;
 
     int r = static_cast<int>(256 * Math::clampf(c.r, 0.0f, 0.99999f));
@@ -19,33 +20,27 @@ std::string colorToString(const ColorRGB& c) {
     return ss.str();
 }
 
-Vec3 randUnitVector() {
-    const float a = Math::randf(0.0f, 2.0f*Math::Pi);
-    const float z = Math::randf(-1.0f, 1.0f);
-    const float r = sqrt(1.0f - z*z);
-
-    return Vec3(r*cos(a), r*sin(a), z);
+Color gamma2(const Color& c) {
+    return Color(sqrt(c.r), sqrt(c.g), sqrt(c.b));
 }
 
-ColorRGB gamma2(const ColorRGB& c) {
-    return ColorRGB(sqrt(c.r), sqrt(c.g), sqrt(c.b));
-}
-
-ColorRGB rayTrace(const Scene& scene, const Ray& ray, int bounces) {
+Color rayTrace(const Scene& scene, const Ray& ray, int bounces) {
     if (bounces <= 0)
-        return ColorRGB(0.0f, 0.0f, 0.0f);
+        return Color(0.0f, 0.0f, 0.0f);
 
     HitInfo hit;
     if (scene.rayTrace(ray, 0.0025f, Math::MaxFloat, hit)) {
-        const Vec3 randUnit = randUnitVector();
-        const Vec3 reflectTarget = hit.point + hit.normal + randUnit;
+        Ray scattered;
+        Color attenuation;
+        if (!hit.material->scatter(ray, hit, attenuation, scattered))
+            return Color(0.0f, 0.0f, 0.0f);
 
-        return 0.5f*rayTrace(scene, Ray(hit.point, Vec3::normalize(reflectTarget - hit.point)), bounces-1);
+        return attenuation * rayTrace(scene, scattered, bounces-1);
     }
 
     const float t = 0.5f*(ray.direction.y + 1.0f);
 
-    return (1.0f-t)*ColorRGB(1.0f, 1.0f, 1.0f) + t*ColorRGB(0.5f, 0.7f, 1.0f);
+    return (1.0f-t)*Color(1.0f, 1.0f, 1.0f) + t*Color(0.5f, 0.7f, 1.0f);
 }
 
 int main() {
@@ -61,12 +56,17 @@ int main() {
     const Camera camera(aspectRatio);
 
     // Scene
+    auto materialGround = std::make_shared<Lambertian>(Color(0.8f, 0.8f, 0.0f));
+    auto materialSphere = std::make_shared<Lambertian>(Color(0.7f, 0.3f, 0.3f));
+
     Scene scene;
     scene.addEntity(std::make_shared<SphereEntity>(
-        Sphere(Vec3(0.0f, 0.0f, -1.0f), 0.5f)
+        Sphere(Vec3(0.0f, 0.0f, -1.0f), 0.5f),
+        materialSphere
     ));
     scene.addEntity(std::make_shared<SphereEntity>(
-        Sphere(Vec3(0.0f, -100.5f, -1.0f), 100.0f)
+        Sphere(Vec3(0.0f, -100.5f, -1.0f), 100.0f),
+        materialGround
     ));
 
     // Render
@@ -76,7 +76,7 @@ int main() {
         std::cerr << "Scanning line: " << (imageHeight-y) << std::endl;
 
         for (int x = 0; x < imageWidth; ++x) {
-            ColorRGB pixel(0.0f, 0.0f, 0.0f);
+            Color pixel(0.0f, 0.0f, 0.0f);
 
             for (int s = 0; s < perPixelSamples; ++s) {
                 const float u = float(x + Math::randf()) / (imageWidth-1);

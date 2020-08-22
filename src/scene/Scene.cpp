@@ -1,4 +1,4 @@
-#include "Scene.h"
+#include "scene.h"
 
 bool Scene::rayTrace(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const {
     bool registeredHit = false;

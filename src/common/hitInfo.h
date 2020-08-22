@@ -1,9 +1,7 @@
 #pragma once
 
-#include <memory>
-
-#include "../common/math.h"
-#include "../common/geometry.h"
+#include "geometry.h"
+#include "material.h"
 
 struct HitInfo {
     HitInfo() {};
@@ -14,12 +12,7 @@ struct HitInfo {
 
     Vec3 point;
     Vec3 normal;
+    IMaterialPtr material;
     float t;
     bool frontFace;
 };
-
-struct IEntity {
-    virtual bool hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const = 0;
-};
-
-typedef std::shared_ptr<IEntity> IEntityPtr;

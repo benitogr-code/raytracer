@@ -1,4 +1,8 @@
-#include "SphereEntity.h"
+#include "sphereEntity.h"
+
+void SphereEntity::setMaterial(IMaterialPtr material) {
+    _material = material;
+}
 
 bool SphereEntity::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const {
     // Resolve quadratic equation terms
@@ -25,6 +29,7 @@ bool SphereEntity::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) 
         outHit.t = t1;
         outHit.normal = frontFace ? normal : -normal;
         outHit.frontFace = frontFace;
+        outHit.material = _material;
 
         return true;
     }
@@ -39,6 +44,7 @@ bool SphereEntity::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) 
         outHit.t = t2;
         outHit.normal = frontFace ? normal : -normal;
         outHit.frontFace = frontFace;
+        outHit.material = _material;
 
         return true;
     }

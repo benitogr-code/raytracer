@@ -3,6 +3,7 @@
 
 #include "common/color.h"
 #include "common/geometry.h"
+#include "scene/materials/dielectric.h"
 #include "scene/materials/lambertian.h"
 #include "scene/materials/metal.h"
 #include "scene/camera.h"
@@ -30,7 +31,7 @@ Color rayTrace(const Scene& scene, const Ray& ray, int bounces) {
         return Color(0.0f, 0.0f, 0.0f);
 
     HitInfo hit;
-    if (scene.rayTrace(ray, 0.0025f, Math::MaxFloat, hit)) {
+    if (scene.rayTrace(ray, 0.005f, Math::MaxFloat, hit)) {
         Ray scattered;
         Color attenuation;
         if (!hit.material->scatter(ray, hit, attenuation, scattered))
@@ -58,9 +59,9 @@ int main() {
 
     // Scene
     auto materialGround = std::make_shared<Lambertian>(Color(0.8f, 0.8f, 0.0f));
-    auto materialSphereCenter = std::make_shared<Lambertian>(Color(0.7f, 0.3f, 0.3f));
-    auto materialSphereLeft = std::make_shared<Metal>(Color(0.8f, 0.8f, 0.8f), 0.0f);
-    auto materialSphereRight = std::make_shared<Metal>(Color(0.8f, 0.6f, 0.2f), 0.3f);
+    auto materialSphereCenter = std::make_shared<Lambertian>(Color(0.1f, 0.2f, 0.5f));
+    auto materialSphereLeft = std::make_shared<Dielectric>(1.5f);
+    auto materialSphereRight = std::make_shared<Metal>(Color(0.8f, 0.6f, 0.2f), 0.1f);
 
     Scene scene;
     scene.addEntity(std::make_shared<SphereEntity>(

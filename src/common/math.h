@@ -12,7 +12,17 @@ namespace Math {
 
     template<typename T>
     inline bool inRange(const T& value, const T& min, const T& max) {
-        return (value >= min) && (value <= max);
+        return (value > min) && (value < max);
+    }
+
+    template<typename T>
+    inline float min(const T& a, const T& b) {
+        return std::min<T>(a, b);
+    }
+
+    template<typename T>
+    inline float max(const T& a, const T& b) {
+        return std::max<T>(a, b);
     }
 
     inline float randf() {
@@ -139,5 +149,21 @@ inline Vec3 operator*(float f, const Vec3 &v) {
 namespace Math {
     inline Vec3 reflect(const Vec3& v, const Vec3& n) {
         return v - 2.0f*Vec3::dot(v,n)*n;
+    }
+
+    // Refraction: https://en.wikipedia.org/wiki/Snell's_law
+    inline Vec3 refract(const Vec3& v, const Vec3& n, float etaiOverEtat) {
+        const float cosTheta = Vec3::dot(-v, n);
+        const Vec3 rPerp = etaiOverEtat * (v + (cosTheta*n));
+        const Vec3 rParallel = -sqrt(fabs(1.0f - rPerp.lengthSqr())) * n;
+
+        return rPerp + rParallel;
+    }
+
+    inline float schlick(float cosine, float refractionIndex) {
+        float r0 = (1-refractionIndex) / (1+refractionIndex);
+        r0 *= r0;
+
+        return r0 + (1.0f-r0)*pow((1.0f - cosine),5);
     }
 }

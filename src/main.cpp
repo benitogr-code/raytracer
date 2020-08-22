@@ -4,6 +4,7 @@
 #include "common/color.h"
 #include "common/geometry.h"
 #include "scene/materials/lambertian.h"
+#include "scene/materials/metal.h"
 #include "scene/camera.h"
 #include "scene/scene.h"
 #include "scene/sphereEntity.h"
@@ -57,16 +58,26 @@ int main() {
 
     // Scene
     auto materialGround = std::make_shared<Lambertian>(Color(0.8f, 0.8f, 0.0f));
-    auto materialSphere = std::make_shared<Lambertian>(Color(0.7f, 0.3f, 0.3f));
+    auto materialSphereCenter = std::make_shared<Lambertian>(Color(0.7f, 0.3f, 0.3f));
+    auto materialSphereLeft = std::make_shared<Metal>(Color(0.8f, 0.8f, 0.8f), 0.0f);
+    auto materialSphereRight = std::make_shared<Metal>(Color(0.8f, 0.6f, 0.2f), 0.3f);
 
     Scene scene;
     scene.addEntity(std::make_shared<SphereEntity>(
-        Sphere(Vec3(0.0f, 0.0f, -1.0f), 0.5f),
-        materialSphere
-    ));
-    scene.addEntity(std::make_shared<SphereEntity>(
         Sphere(Vec3(0.0f, -100.5f, -1.0f), 100.0f),
         materialGround
+    ));
+    scene.addEntity(std::make_shared<SphereEntity>(
+        Sphere(Vec3(0.0f, 0.0f, -1.0f), 0.5f),
+        materialSphereCenter
+    ));
+    scene.addEntity(std::make_shared<SphereEntity>(
+        Sphere(Vec3(-1.0f, 0.0f, -1.0f), 0.5f),
+        materialSphereLeft)
+    );
+    scene.addEntity(std::make_shared<SphereEntity>(
+        Sphere(Vec3(1.0f, 0.0f, -1.0f), 0.5f),
+        materialSphereRight
     ));
 
     // Render

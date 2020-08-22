@@ -16,6 +16,8 @@ set(APP_SOURCES
 	src/common/math.h
 	src/scene/materials/lambertian.h
 	src/scene/materials/lambertian.cpp
+	src/scene/materials/metal.h
+	src/scene/materials/metal.cpp
 	src/scene/camera.h
 	src/scene/entity.h
 	src/scene/scene.h

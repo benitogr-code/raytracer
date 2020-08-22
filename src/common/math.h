@@ -106,6 +106,14 @@ struct Vec3 {
         );
     }
 
+    static Vec3 randomUnit() {
+        const float a = Math::randf(0.0f, 2.0f*Math::Pi);
+        const float z = Math::randf(-1.0f, 1.0f);
+        const float r = sqrt(1.0f - z*z);
+
+        return Vec3(r*cos(a), r*sin(a), z);
+    }
+
     union {
         struct { float x, y, z; };
         float _v[3];
@@ -126,4 +134,10 @@ inline Vec3 operator*(const Vec3& v, float f) {
 
 inline Vec3 operator*(float f, const Vec3 &v) {
     return Vec3(f*v.x, f*v.y, f*v.z);
+}
+
+namespace Math {
+    inline Vec3 reflect(const Vec3& v, const Vec3& n) {
+        return v - 2.0f*Vec3::dot(v,n)*n;
+    }
 }

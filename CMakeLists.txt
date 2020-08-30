@@ -9,9 +9,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${PROJECT_SOURCE_DIR}/bin/)
 include_directories ("${PROJECT_SOURCE_DIR}/src")
 
 set(APP_SOURCES
+	src/common/stb/stb_image.h
+	src/common/stb/stb_image_write.h
 	src/common/color.h
 	src/common/geometry.h
 	src/common/hitInfo.h
+	src/common/imageBuffer.h
 	src/common/material.h
 	src/common/math.h
 	src/common/vector.h

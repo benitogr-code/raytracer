@@ -3,6 +3,7 @@
 
 #include "common/color.h"
 #include "common/geometry.h"
+#include "common/imageBuffer.h"
 #include "scene/materials/dielectric.h"
 #include "scene/materials/lambertian.h"
 #include "scene/materials/metal.h"
@@ -10,16 +11,16 @@
 #include "scene/scene.h"
 #include "scene/sphereEntity.h"
 
-std::string colorToString(const Color& c) {
-    std::stringstream ss;
+#define STB_IMAGE_IMPLEMENTATION
+#include "common/stb/stb_image.h"
 
-    int r = static_cast<int>(256 * Math::clampf(c.r, 0.0f, 0.99999f));
-    int g = static_cast<int>(256 * Math::clampf(c.g, 0.0f, 0.99999f));
-    int b = static_cast<int>(256 * Math::clampf(c.b, 0.0f, 0.99999f));
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "common/stb/stb_image_write.h"
 
-    ss << r << ' ' << g << ' ' << b;
-
-    return ss.str();
+void savePng(const char* szFile, const ImageBuffer& imgBuffer) {
+    const int stride = imgBuffer.width() * imgBuffer.channels();
+    const unsigned char* end = imgBuffer.data() + (imgBuffer.width() * imgBuffer.channels() * (imgBuffer.height() - 1));
+    stbi_write_png(szFile, imgBuffer.width(), imgBuffer.height(), imgBuffer.channels(), end, -stride);
 }
 
 Color gamma2(const Color& c) {
@@ -105,17 +106,14 @@ void buildScene(Scene& scene) {
 }
 
 int main() {
-    // Image
-    const float aspectRatio = 16.0f / 9.0f;
-    const int imageWidth = 480;
-    const int imageHeight = (int)(imageWidth / aspectRatio);
-
-    const int perPixelSamples = 8;
-    const int maxBounces = 5;
-
     // Scene & vamera
     Scene scene;
     buildScene(scene);
+
+    // Settings
+    const float aspectRatio = 16.0f / 9.0f;
+    const int perPixelSamples = 8;
+    const int maxBounces = 5;
 
     const Vec3 camPos(13.0f, 2.0f, 3.0f);
     const Vec3 camTarget(0.0f, 0.0f, 0.0f);
@@ -125,11 +123,15 @@ int main() {
     Camera camera(25.0f, aspectRatio, aperture, focusDistance);
     camera.lookAt(camPos, camTarget);
 
-    // Render
+    // Render image
+    const int imageWidth = 480;
+    const int imageHeight = (int)(imageWidth / aspectRatio);
+    ImageBuffer imgBuffer(imageWidth, imageHeight);
+
     std::cout << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";
 
     for (int y = imageHeight-1; y >= 0; --y) {
-        std::cerr << "Scanning line: " << (imageHeight-y) << std::endl;
+        std::cout << "Scanning line: " << (imageHeight-y) << std::endl;
 
         for (int x = 0; x < imageWidth; ++x) {
             Color pixel(0.0f, 0.0f, 0.0f);
@@ -143,9 +145,11 @@ int main() {
             }
 
             const float scale = 1.0f / perPixelSamples;
-            std::cout << colorToString(gamma2(pixel*scale)) << '\n';
+            imgBuffer.writePixel(x, y, gamma2(pixel*scale));
         }
     }
+
+    savePng(".output/image.png", imgBuffer);
 
     return 0;
 }

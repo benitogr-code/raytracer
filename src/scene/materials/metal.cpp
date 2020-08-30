@@ -4,7 +4,7 @@
 #include "../../common/hitInfo.h"
 
 bool Metal::scatter(const Ray& ray, const HitInfo& hit, Color& attenuation, Ray& scattered) const {
-    const Vec3 reflect = Math::reflect(ray.direction, hit.normal);
+    const Vec3 reflect = VectorUtils::reflect(ray.direction, hit.normal);
     scattered = Ray(hit.point, Vec3::normalize(reflect + _fuzzy*Vec3::randomUnit()));
     attenuation = _albedo;
 

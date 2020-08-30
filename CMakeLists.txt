@@ -14,6 +14,7 @@ set(APP_SOURCES
 	src/common/hitInfo.h
 	src/common/material.h
 	src/common/math.h
+	src/common/vector.h
 	src/scene/materials/dielectric.h
 	src/scene/materials/dielectric.cpp
 	src/scene/materials/lambertian.h

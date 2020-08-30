@@ -107,11 +107,11 @@ void buildScene(Scene& scene) {
 int main() {
     // Image
     const float aspectRatio = 16.0f / 9.0f;
-    const int imageWidth = 1024;
+    const int imageWidth = 480;
     const int imageHeight = (int)(imageWidth / aspectRatio);
 
-    const int perPixelSamples = 192;
-    const int maxBounces = 10;
+    const int perPixelSamples = 8;
+    const int maxBounces = 5;
 
     // Scene & vamera
     Scene scene;

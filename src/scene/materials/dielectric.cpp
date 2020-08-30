@@ -3,8 +3,6 @@
 #include "../../common/geometry.h"
 #include "../../common/hitInfo.h"
 
-#include <iostream>
-
 bool Dielectric::scatter(const Ray& ray, const HitInfo& hit, Color& attenuation, Ray& scattered) const {
     const float etaiOverEtat = hit.frontFace ? (1.0f / _refractionIndex) : _refractionIndex;
 
@@ -14,11 +12,11 @@ bool Dielectric::scatter(const Ray& ray, const HitInfo& hit, Color& attenuation,
     const bool shouldReflect = (etaiOverEtat * sinTheta) > 1.0f;
 
     if (shouldReflect || (Math::randf() < Math::schlick(cosTheta, etaiOverEtat))) {
-        const Vec3 reflected = Math::reflect(ray.direction, hit.normal);
+        const Vec3 reflected = VectorUtils::reflect(ray.direction, hit.normal);
         scattered = Ray(hit.point, Vec3::normalize(reflected));
     }
     else {
-        const Vec3 refracted = Math::refract(ray.direction, hit.normal, etaiOverEtat);
+        const Vec3 refracted = VectorUtils::refract(ray.direction, hit.normal, etaiOverEtat);
         scattered = Ray(hit.point, Vec3::normalize(refracted));
     }
 

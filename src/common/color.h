@@ -1,5 +1,7 @@
 #pragma once
 
+#include "math.h"
+
 struct Color {
     Color() : _v{0.0f, 0.0f, 0.0f} {}
     Color(float r, float g, float b) : _v{r, g, b} {}
@@ -31,6 +33,18 @@ struct Color {
         b /= f;
 
         return *this;
+    }
+
+    static Color random() {
+        return Color(Math::randf(), Math::randf(), Math::randf());
+    }
+
+    static Color random(float min, float max) {
+        return Color(
+            Math::randf(min, max),
+            Math::randf(min, max),
+            Math::randf(min, max)
+        );
     }
 
     union {

@@ -45,6 +45,65 @@ Color rayTrace(const Scene& scene, const Ray& ray, int bounces) {
     return (1.0f-t)*Color(1.0f, 1.0f, 1.0f) + t*Color(0.5f, 0.7f, 1.0f);
 }
 
+void buildScene(Scene& scene) {
+    IMaterialPtr materialGround = std::make_shared<Lambertian>(Color(0.5f, 0.5f, 0.5f));
+    scene.addEntity(std::make_shared<SphereEntity>(
+        Sphere(Vec3(0.0f, -1000.0f, 0.0f), 1000.0f),
+        materialGround
+    ));
+
+    for (int i = -11; i < 11; i++) {
+        for (int j = -11; j < 11; j++) {
+            const Vec3 position(
+                i + 0.9f*Math::randf(),
+                0.2f,
+                j + 0.9f*Math::randf()
+            );
+
+            if ((position - Vec3(4.0f, 0.2f, 0.0f)).length() < 0.9f)
+                continue;
+
+            IMaterialPtr materialSphere;
+
+            const float selection = Math::randf();
+            if (selection < 0.8f) {
+                const Color albedo = Color::random() * Color::random();
+                materialSphere = std::make_shared<Lambertian>(albedo);
+            }
+            else if (selection < 0.95f) {
+                const Color albedo = Color::random(0.5f, 1.0f);
+                const float fuzz = Math::randf(0.0f, 0.5f);
+                materialSphere = std::make_shared<Metal>(albedo, fuzz);
+            } else {
+                materialSphere = std::make_shared<Dielectric>(1.5f);
+            }
+
+            scene.addEntity(std::make_shared<SphereEntity>(
+                Sphere(position, 0.2f),
+                materialSphere
+            ));
+        }
+    }
+
+    IMaterialPtr material1 = std::make_shared<Dielectric>(1.5f);
+    scene.addEntity(std::make_shared<SphereEntity>(
+        Sphere(Vec3(0.0f, 1.0f, 0.0f), 1.0f),
+        material1
+    ));
+
+    IMaterialPtr material2 = std::make_shared<Lambertian>(Color(0.4f, 0.2f, 0.1f));
+    scene.addEntity(std::make_shared<SphereEntity>(
+        Sphere(Vec3(-4.0f, 1.0f, 0.0f), 1.0f),
+        material2
+    ));
+
+    IMaterialPtr material3 = std::make_shared<Metal>(Color(0.7f, 0.6f, 0.5f), 0.0f);
+        scene.addEntity(std::make_shared<SphereEntity>(
+        Sphere(Vec3(4.0f, 1.0f, 0.0f), 1.0f),
+        material3
+    ));
+}
+
 int main() {
     // Image
     const float aspectRatio = 16.0f / 9.0f;
@@ -54,42 +113,17 @@ int main() {
     const int perPixelSamples = 16;
     const int maxBounces = 10;
 
-    // Camera
-    const Vec3 camPos(3.0f, 3.0f, 2.0f);
-    const Vec3 camTarget(0.0f, 0.0f, -1.0f);
-    const float focusDistance = (camTarget - camPos).length();
-    const float aperture = 2.0f;
+    // Scene & vamera
+    Scene scene;
+    buildScene(scene);
+
+    const Vec3 camPos(13.0f, 2.0f, 3.0f);
+    const Vec3 camTarget(0.0f, 0.0f, 0.0f);
+    const float focusDistance = 10.0f;
+    const float aperture = 0.1f;
 
     Camera camera(25.0f, aspectRatio, aperture, focusDistance);
     camera.lookAt(camPos, camTarget);
-
-    // Scene
-    auto materialGround = std::make_shared<Lambertian>(Color(0.8f, 0.8f, 0.0f));
-    auto materialSphereCenter = std::make_shared<Lambertian>(Color(0.1f, 0.2f, 0.5f));
-    auto materialSphereLeft = std::make_shared<Dielectric>(1.5f);
-    auto materialSphereRight = std::make_shared<Metal>(Color(0.8f, 0.6f, 0.2f), 0.1f);
-
-    Scene scene;
-    scene.addEntity(std::make_shared<SphereEntity>(
-        Sphere(Vec3(0.0f, -100.5f, -1.0f), 100.0f),
-        materialGround
-    ));
-    scene.addEntity(std::make_shared<SphereEntity>(
-        Sphere(Vec3(0.0f, 0.0f, -1.0f), 0.5f),
-        materialSphereCenter
-    ));
-    scene.addEntity(std::make_shared<SphereEntity>(
-        Sphere(Vec3(-1.0f, 0.0f, -1.0f), 0.5f),
-        materialSphereLeft)
-    );
-    scene.addEntity(std::make_shared<SphereEntity>(
-        Sphere(Vec3(-1.0f, 0.0f, -1.0f), -0.45f),
-        materialSphereLeft)
-    );
-    scene.addEntity(std::make_shared<SphereEntity>(
-        Sphere(Vec3(1.0f, 0.0f, -1.0f), 0.5f),
-        materialSphereRight
-    ));
 
     // Render
     std::cout << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";

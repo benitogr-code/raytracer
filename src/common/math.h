@@ -128,6 +128,15 @@ struct Vec3 {
         return Vec3(r*cos(a), r*sin(a), z);
     }
 
+    static Vec3 randomUnitDisk() {
+        while (true) {
+            Vec3 v = Vec3(Math::randf(-1.0f,1.0f), Math::randf(-1.0f,1.0f), 0.0f);
+            if (v.lengthSqr() >= 1.0f) continue;
+
+            return v;
+        }
+    }
+
     union {
         struct { float x, y, z; };
         float _v[3];

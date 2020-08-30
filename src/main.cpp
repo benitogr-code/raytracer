@@ -55,8 +55,13 @@ int main() {
     const int maxBounces = 10;
 
     // Camera
-    Camera camera(90.0f, aspectRatio);
-    camera.lookAt(Vec3(-2.0f, 2.0f, 1.0f), Vec3(0.0f, 0.0f, -1.0f));
+    const Vec3 camPos(3.0f, 3.0f, 2.0f);
+    const Vec3 camTarget(0.0f, 0.0f, -1.0f);
+    const float focusDistance = (camTarget - camPos).length();
+    const float aperture = 2.0f;
+
+    Camera camera(25.0f, aspectRatio, aperture, focusDistance);
+    camera.lookAt(camPos, camTarget);
 
     // Scene
     auto materialGround = std::make_shared<Lambertian>(Color(0.8f, 0.8f, 0.0f));

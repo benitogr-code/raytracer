@@ -17,6 +17,22 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "common/stb/stb_image_write.h"
 
+void displayProgress(float value) {
+    const int barWidth = 60;
+    const int pos = barWidth * value;
+
+    std::stringstream ss;
+    ss << "\rProgress [";
+
+    for (int i = 0; i < barWidth; ++i) {
+        ss << ((i <= pos) ? "*" : " ");
+    }
+
+    ss << "] " << int(value * 100.0f) << " %";
+
+    std::cout << ss.str() << std::flush;
+}
+
 void savePng(const char* szFile, const ImageBuffer& imgBuffer) {
     const int stride = imgBuffer.width() * imgBuffer.channels();
     const unsigned char* end = imgBuffer.data() + (imgBuffer.width() * imgBuffer.channels() * (imgBuffer.height() - 1));
@@ -128,10 +144,11 @@ int main() {
     const int imageHeight = (int)(imageWidth / aspectRatio);
     ImageBuffer imgBuffer(imageWidth, imageHeight);
 
-    std::cout << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";
+    std::cout << "Rendering scene..." << std::endl;
 
     for (int y = imageHeight-1; y >= 0; --y) {
-        std::cout << "Scanning line: " << (imageHeight-y) << std::endl;
+        const float progress = ((float)(imageHeight-y) / imageHeight);
+        displayProgress(progress);
 
         for (int x = 0; x < imageWidth; ++x) {
             Color pixel(0.0f, 0.0f, 0.0f);
@@ -149,7 +166,12 @@ int main() {
         }
     }
 
-    savePng(".output/image.png", imgBuffer);
+    const char* szFile = ".output/image.png";
+    std::cout << "\nSaving to " << szFile << std::endl;
+
+    savePng(szFile, imgBuffer);
+
+    std::cout << "Finished" << std::endl;
 
     return 0;
 }

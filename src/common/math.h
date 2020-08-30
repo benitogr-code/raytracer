@@ -36,6 +36,10 @@ namespace Math {
     inline float clampf(float value, float min, float max) {
         return std::max(min, std::min(value, max));
     }
+
+    inline float degreesToRadians(float value) {
+        return (value * Pi) / 180.0f;
+    }
 }
 
 // Vec3 ///////////

@@ -55,7 +55,8 @@ int main() {
     const int maxBounces = 10;
 
     // Camera
-    const Camera camera(aspectRatio);
+    Camera camera(90.0f, aspectRatio);
+    camera.lookAt(Vec3(-2.0f, 2.0f, 1.0f), Vec3(0.0f, 0.0f, -1.0f));
 
     // Scene
     auto materialGround = std::make_shared<Lambertian>(Color(0.8f, 0.8f, 0.0f));
@@ -74,6 +75,10 @@ int main() {
     ));
     scene.addEntity(std::make_shared<SphereEntity>(
         Sphere(Vec3(-1.0f, 0.0f, -1.0f), 0.5f),
+        materialSphereLeft)
+    );
+    scene.addEntity(std::make_shared<SphereEntity>(
+        Sphere(Vec3(-1.0f, 0.0f, -1.0f), -0.45f),
         materialSphereLeft)
     );
     scene.addEntity(std::make_shared<SphereEntity>(

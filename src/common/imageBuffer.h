@@ -1,5 +1,5 @@
 #include <vector>
-#include "math.h"
+#include "color.h"
 
 // RGB image buffer
 

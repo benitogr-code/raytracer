@@ -31,6 +31,8 @@ set(APP_SOURCES
 	src/scene/sphereEntity.h
 	src/scene/sphereEntity.cpp
 	src/main.cpp
+	src/renderer.h
+	src/renderer.cpp
 )
 
 add_executable(raytracer

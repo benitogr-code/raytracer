@@ -1,3 +1,6 @@
+#pragma once
+
+#include <memory>
 #include <vector>
 #include "color.h"
 
@@ -47,3 +50,5 @@ private:
     int _height;
     int _channels;
 };
+
+typedef std::shared_ptr<ImageBuffer> ImageBufferPtr;

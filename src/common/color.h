@@ -47,6 +47,10 @@ struct Color {
         );
     }
 
+    static Color gamma2(const Color& c) {
+        return Color(sqrt(c.r), sqrt(c.g), sqrt(c.b));
+    }
+
     union {
         struct { float r, g, b; };
         float _v[3];

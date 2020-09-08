@@ -11,18 +11,6 @@
 #include "scene/sphereEntity.h"
 #include "renderer.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "common/stb/stb_image.h"
-
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "common/stb/stb_image_write.h"
-
-void savePng(const char* szFile, const ImageBufferPtr imgBuffer) {
-    const int stride = imgBuffer->width() * imgBuffer->channels();
-    const unsigned char* end = imgBuffer->data() + (imgBuffer->width() * imgBuffer->channels() * (imgBuffer->height() - 1));
-    stbi_write_png(szFile, imgBuffer->width(), imgBuffer->height(), imgBuffer->channels(), end, -stride);
-}
-
 void buildScene(Scene& scene) {
     IMaterialPtr materialGround = std::make_shared<Lambertian>(Color(0.5f, 0.5f, 0.5f));
     scene.addEntity(std::make_shared<SphereEntity>(
@@ -98,22 +86,22 @@ int main() {
     camera.lookAt(camPos, camTarget);
 
     // Render image
-    RenderSettings settings;
+    Renderer::Settings settings;
     settings.imageWidth = 480;
     settings.imageHeight = (int)(480 / aspectRatio);
     settings.samplesPerPixel = 8;
     settings.maxBounces = 5;
 
+    const char* szOutFile = ".output/image.png";
+
     std::cout << "Rendering scene..." << std::endl;
-    {
-        Renderer renderer;
-        auto imgBuffer = renderer.render(scene, camera, settings);
 
-        const char* szFile = ".output/image.png";
-        std::cout << "\nSaving to " << szFile << std::endl;
+    auto image = Renderer::render(scene, camera, settings);
 
-        savePng(szFile, imgBuffer);
-    }
+    std::cout << "\nSaving to " << szOutFile << std::endl;
+
+    Renderer::savePng(image, szOutFile);
+
     std::cout << "Finished" << std::endl;
 
     return 0;

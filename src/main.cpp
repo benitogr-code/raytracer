@@ -117,7 +117,7 @@ int main(int argc, char* argv[]) {
     const Vec3 camTarget(0.0f, 0.0f, 0.0f);
     const float focusDistance = 10.0f;
     const float aperture = 0.1f;
-    const float shutterTime = 1.0f;
+    const float shutterTime = 0.4f;
 
     Camera camera(25.0f, aspectRatio, aperture, focusDistance, shutterTime);
     camera.lookAt(camPos, camTarget);

@@ -52,3 +52,15 @@ bool SphereEntity::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) 
 void SphereEntity::setVelocity(const Vec3& velocity) {
     _velocity = velocity;
 }
+
+bool SphereEntity::getAABB(float t0, float t1, AABB& bbox) const {
+    const Vec3 radius(_sphere.radius, _sphere.radius, _sphere.radius);
+    const Vec3 p0 = getPosition(t0);
+    const Vec3 p1 = getPosition(t1);
+
+    const AABB box0(p0-radius, p0+radius);
+    const AABB box1(p1-radius, p1+radius);
+    bbox = AABB::surroundingBox(box0, box1);
+
+    return true;
+}

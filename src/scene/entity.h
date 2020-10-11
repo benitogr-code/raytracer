@@ -7,8 +7,8 @@
 #include "../common/material.h"
 
 struct IEntity {
-    virtual void setMaterial(IMaterialPtr material) = 0;
     virtual bool hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const = 0;
+    virtual void setVelocity(const Vec3& velocity) = 0;
 };
 
 typedef std::shared_ptr<IEntity> IEntityPtr;

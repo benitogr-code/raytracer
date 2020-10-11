@@ -11,7 +11,26 @@
 #include "scene/sphereEntity.h"
 #include "renderer.h"
 
-void buildScene(Scene& scene) {
+enum class SceneID {
+    Spheres,
+};
+
+SceneID parseScene(int argc, char* argv[]) {
+    const char* scene = "";
+
+    for (int i = 0; i < argc - 1; ++i) {
+        if (strcmp(argv[i], "--scene") == 0) {
+            scene = argv[i+1];
+            break;
+        }
+    }
+
+    // Check for other scenes here
+
+    return SceneID::Spheres;
+}
+
+void buildSceneSpheres(Scene& scene) {
     IMaterialPtr materialGround = std::make_shared<Lambertian>(Color(0.5f, 0.5f, 0.5f));
     scene.addEntity(std::make_shared<SphereEntity>(
         Sphere(Vec3(0.0f, -1000.0f, 0.0f), 1000.0f),
@@ -25,6 +44,7 @@ void buildScene(Scene& scene) {
                 0.2f,
                 j + 0.9f*Math::randf()
             );
+            Vec3 velocity(0.0f, 0.0f, 0.0f);
 
             if ((position - Vec3(4.0f, 0.2f, 0.0f)).length() < 0.9f)
                 continue;
@@ -35,6 +55,7 @@ void buildScene(Scene& scene) {
             if (selection < 0.8f) {
                 const Color albedo = Color::random() * Color::random();
                 materialSphere = std::make_shared<Lambertian>(albedo);
+                velocity.y = Math::randf(0.0f, 0.5f);
             }
             else if (selection < 0.95f) {
                 const Color albedo = Color::random(0.5f, 1.0f);
@@ -44,10 +65,9 @@ void buildScene(Scene& scene) {
                 materialSphere = std::make_shared<Dielectric>(1.5f);
             }
 
-            scene.addEntity(std::make_shared<SphereEntity>(
-                Sphere(position, 0.2f),
-                materialSphere
-            ));
+            auto sphere = std::make_shared<SphereEntity>(Sphere(position, 0.2f), materialSphere);
+            sphere->setVelocity(velocity);
+            scene.addEntity(sphere);
         }
     }
 
@@ -70,10 +90,26 @@ void buildScene(Scene& scene) {
     ));
 }
 
-int main() {
+void buildScene(SceneID id, Scene& outScene) {
+    if (id == SceneID::Spheres) {
+        std::cout << "Building scene: Spheres" << std::endl;
+        buildSceneSpheres(outScene);
+    }
+}
+
+const char* getFilePathForScene(SceneID id) {
+    if (id == SceneID::Spheres) {
+        return ".output/spheres.png";
+    }
+
+    return ".output/image.png";
+}
+
+int main(int argc, char* argv[]) {
     // Scene & camera
+    const SceneID sceneId = parseScene(argc, argv);
     Scene scene;
-    buildScene(scene);
+    buildScene(sceneId, scene);
 
     const float aspectRatio = 16.0f / 9.0f;
 
@@ -81,8 +117,9 @@ int main() {
     const Vec3 camTarget(0.0f, 0.0f, 0.0f);
     const float focusDistance = 10.0f;
     const float aperture = 0.1f;
+    const float shutterTime = 1.0f;
 
-    Camera camera(25.0f, aspectRatio, aperture, focusDistance);
+    Camera camera(25.0f, aspectRatio, aperture, focusDistance, shutterTime);
     camera.lookAt(camPos, camTarget);
 
     // Render image
@@ -92,12 +129,11 @@ int main() {
     settings.samplesPerPixel = 8;
     settings.maxBounces = 5;
 
-    const char* szOutFile = ".output/image.png";
-
     std::cout << "Rendering scene..." << std::endl;
 
     auto image = Renderer::render(scene, camera, settings);
 
+    const char* szOutFile = getFilePathForScene(sceneId);
     std::cout << "\nSaving to " << szOutFile << std::endl;
 
     Renderer::savePng(image, szOutFile);

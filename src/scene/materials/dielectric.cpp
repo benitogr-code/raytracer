@@ -13,11 +13,11 @@ bool Dielectric::scatter(const Ray& ray, const HitInfo& hit, Color& attenuation,
 
     if (shouldReflect || (Math::randf() < Math::schlick(cosTheta, etaiOverEtat))) {
         const Vec3 reflected = VectorUtils::reflect(ray.direction, hit.normal);
-        scattered = Ray(hit.point, Vec3::normalize(reflected));
+        scattered = Ray(hit.point, Vec3::normalize(reflected), ray.time);
     }
     else {
         const Vec3 refracted = VectorUtils::refract(ray.direction, hit.normal, etaiOverEtat);
-        scattered = Ray(hit.point, Vec3::normalize(refracted));
+        scattered = Ray(hit.point, Vec3::normalize(refracted), ray.time);
     }
 
     attenuation = Color(1.0f, 1.0f, 1.0f);

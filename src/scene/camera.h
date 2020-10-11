@@ -4,7 +4,7 @@
 
 class Camera {
 public:
-    Camera(float vFov, float aspectRatio, float aperture, float focusDistance) {
+    Camera(float vFov, float aspectRatio, float aperture, float focusDistance, float shutterTime) {
         const float angle = Math::degreesToRadians(vFov);
         const float h = std::tanf(angle/2.0f);
 
@@ -13,6 +13,7 @@ public:
         _focusDistance = focusDistance;
         _viewportHeight = 2.0f * h;
         _viewportWidth = _aspectRatio * _viewportHeight;
+        _shutterTime = shutterTime;
 
         _position = Vec3(0.0f, 0.0f, 0.0f);
         _fwd = Vec3(0.0f, 0.0f, -1.0f);
@@ -38,7 +39,7 @@ public:
         const Vec3 offset = _right * r.x + _up * r.y;
         const Vec3 origin = _position + offset;
 
-        return Ray(origin, Vec3::normalize(vpBL + u*vpH + v*vpV - origin));
+        return Ray(origin, Vec3::normalize(vpBL + u*vpH + v*vpV - origin), Math::randf(0.0f, _shutterTime));
     }
 
 private:
@@ -52,4 +53,5 @@ private:
     float _focusDistance;
     float _viewportHeight;
     float _viewportWidth;
+    float _shutterTime;
 };

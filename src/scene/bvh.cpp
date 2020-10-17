@@ -7,7 +7,7 @@ inline bool bboxCompare(const IHittablePtr& a, const IHittablePtr& b, int axis) 
     AABB bboxB;
 
     if (!a->getAABB(0.0f, 0.0f, bboxA) || !b->getAABB(0.0f, 0.0f, bboxB))
-        throw "No bounding box in bvh_node constructor";
+        throw "Error building Bvh";
 
     return bboxA.min()._v[axis] < bboxB.min()._v[axis];
 }
@@ -91,7 +91,7 @@ BvhNodePtr BvhTree::build(const std::vector<IHittablePtr>& entities, size_t star
     AABB lBbox, rBbox;
 
     if (!node->_left->getAABB(t0, t1, lBbox)|| !node->_right->getAABB(t0, t1, rBbox))
-        throw "Missing AABB for BvH node";
+        throw "Error building Bvh";
 
     node->_bbox = AABB::surroundingBox(lBbox, rBbox);
 

@@ -122,6 +122,8 @@ int main(int argc, char* argv[]) {
     Camera camera(25.0f, aspectRatio, aperture, focusDistance, shutterTime);
     camera.lookAt(camPos, camTarget);
 
+    scene.buildBvh(0.0f, shutterTime);
+
     // Render image
     Renderer::Settings settings;
     settings.imageWidth = 480;

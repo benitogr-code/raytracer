@@ -24,6 +24,8 @@ set(APP_SOURCES
 	src/scene/materials/lambertian.cpp
 	src/scene/materials/metal.h
 	src/scene/materials/metal.cpp
+	src/scene/bvh.h
+	src/scene/bvh.cpp
 	src/scene/camera.h
 	src/scene/entity.h
 	src/scene/entitySphere.h

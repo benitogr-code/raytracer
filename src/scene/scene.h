@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "../common/hittable.h"
+#include "bvh.h"
 
 class Scene {
 private:
@@ -13,9 +14,10 @@ public:
         _entities.push_back(entity);
     }
 
+    void buildBvh(float t0, float t1);
     bool rayTrace(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const;
-    bool getAABB(float t0, float t1, AABB& bbox) const;
 
 private:
     Entities _entities;
+    BvhTreePtr _bvh;
 };

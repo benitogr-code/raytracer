@@ -9,10 +9,14 @@ public:
         , _material(material)
         , _velocity(0.0f, 0.0f, 0.0f) {}
 
+    // IEntity
     virtual bool hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const override;
-    virtual void setVelocity(const Vec3& velocity) override;
     virtual bool getAABB(float t0, float t1, AABB& bbox) const override;
 
+    virtual void setMaterial(IMaterialPtr material) override;
+    virtual void setVelocity(const Vec3& velocity) override;
+
+    //~IEntity
 private:
     Vec3 getPosition(float time) const {
         return _sphere.center + (_velocity * time);

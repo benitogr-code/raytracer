@@ -1,7 +1,6 @@
 #include "dielectric.h"
 
-#include "../../common/geometry.h"
-#include "../../common/hitInfo.h"
+#include "../../common/hittable.h"
 
 bool Dielectric::scatter(const Ray& ray, const HitInfo& hit, Color& attenuation, Ray& scattered) const {
     const float etaiOverEtat = hit.frontFace ? (1.0f / _refractionIndex) : _refractionIndex;

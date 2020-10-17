@@ -1,7 +1,6 @@
 #include "metal.h"
 
-#include "../../common/geometry.h"
-#include "../../common/hitInfo.h"
+#include "../../common/hittable.h"
 
 bool Metal::scatter(const Ray& ray, const HitInfo& hit, Color& attenuation, Ray& scattered) const {
     const Vec3 reflect = VectorUtils::reflect(ray.direction, hit.normal);

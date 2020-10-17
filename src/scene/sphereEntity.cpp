@@ -49,10 +49,6 @@ bool SphereEntity::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) 
     return false;
 }
 
-void SphereEntity::setVelocity(const Vec3& velocity) {
-    _velocity = velocity;
-}
-
 bool SphereEntity::getAABB(float t0, float t1, AABB& bbox) const {
     const Vec3 radius(_sphere.radius, _sphere.radius, _sphere.radius);
     const Vec3 p0 = getPosition(t0);
@@ -63,4 +59,12 @@ bool SphereEntity::getAABB(float t0, float t1, AABB& bbox) const {
     bbox = AABB::surroundingBox(box0, box1);
 
     return true;
+}
+
+void SphereEntity::setVelocity(const Vec3& velocity) {
+    _velocity = velocity;
+}
+
+void SphereEntity::setMaterial(IMaterialPtr material) {
+    _material = material;
 }

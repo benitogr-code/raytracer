@@ -26,10 +26,10 @@ set(APP_SOURCES
 	src/scene/materials/metal.cpp
 	src/scene/camera.h
 	src/scene/entity.h
+	src/scene/entitySphere.h
+	src/scene/entitySphere.cpp
 	src/scene/scene.h
 	src/scene/scene.cpp
-	src/scene/sphereEntity.h
-	src/scene/sphereEntity.cpp
 	src/main.cpp
 	src/renderer.h
 	src/renderer.cpp

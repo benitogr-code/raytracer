@@ -2,14 +2,14 @@
 
 #include <vector>
 
-#include "entity.h"
+#include "../common/hittable.h"
 
 class Scene {
 private:
-    typedef std::vector<IEntityPtr> Entities;
+    typedef std::vector<IHittablePtr> Entities;
 
 public:
-    void addEntity(IEntityPtr entity) {
+    void addEntity(IHittablePtr entity) {
         _entities.push_back(entity);
     }
 

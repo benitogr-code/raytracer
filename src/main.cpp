@@ -8,7 +8,7 @@
 #include "scene/materials/metal.h"
 #include "scene/camera.h"
 #include "scene/scene.h"
-#include "scene/sphereEntity.h"
+#include "scene/entitySphere.h"
 #include "renderer.h"
 
 enum class SceneID {
@@ -32,7 +32,7 @@ SceneID parseScene(int argc, char* argv[]) {
 
 void buildSceneSpheres(Scene& scene) {
     IMaterialPtr materialGround = std::make_shared<Lambertian>(Color(0.5f, 0.5f, 0.5f));
-    scene.addEntity(std::make_shared<SphereEntity>(
+    scene.addEntity(std::make_shared<EntitySphere>(
         Sphere(Vec3(0.0f, -1000.0f, 0.0f), 1000.0f),
         materialGround
     ));
@@ -65,26 +65,26 @@ void buildSceneSpheres(Scene& scene) {
                 materialSphere = std::make_shared<Dielectric>(1.5f);
             }
 
-            auto sphere = std::make_shared<SphereEntity>(Sphere(position, 0.2f), materialSphere);
+            auto sphere = std::make_shared<EntitySphere>(Sphere(position, 0.2f), materialSphere);
             sphere->setVelocity(velocity);
             scene.addEntity(sphere);
         }
     }
 
     IMaterialPtr material1 = std::make_shared<Dielectric>(1.5f);
-    scene.addEntity(std::make_shared<SphereEntity>(
+    scene.addEntity(std::make_shared<EntitySphere>(
         Sphere(Vec3(0.0f, 1.0f, 0.0f), 1.0f),
         material1
     ));
 
     IMaterialPtr material2 = std::make_shared<Lambertian>(Color(0.4f, 0.2f, 0.1f));
-    scene.addEntity(std::make_shared<SphereEntity>(
+    scene.addEntity(std::make_shared<EntitySphere>(
         Sphere(Vec3(-4.0f, 1.0f, 0.0f), 1.0f),
         material2
     ));
 
     IMaterialPtr material3 = std::make_shared<Metal>(Color(0.7f, 0.6f, 0.5f), 0.0f);
-        scene.addEntity(std::make_shared<SphereEntity>(
+        scene.addEntity(std::make_shared<EntitySphere>(
         Sphere(Vec3(4.0f, 1.0f, 0.0f), 1.0f),
         material3
     ));

@@ -13,7 +13,6 @@ public:
     //~IHittable
 
 private:
-    Vec3 getPosition(float time) const {
-        return geometry().center + (velocity() * time);
-    }
+    Vec3 getPosition(float time) const;
+    void getUVCoords(const Vec3& p, float& u, float& v) const;
 };

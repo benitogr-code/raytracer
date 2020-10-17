@@ -6,6 +6,7 @@
 #include "scene/materials/dielectric.h"
 #include "scene/materials/lambertian.h"
 #include "scene/materials/metal.h"
+#include "scene/textures/checkerTexture.h"
 #include "scene/camera.h"
 #include "scene/scene.h"
 #include "scene/entitySphere.h"
@@ -58,7 +59,8 @@ Quality parseQuality(int argc, char* argv[]) {
 }
 
 void buildSceneSpheres(Scene& scene) {
-    IMaterialPtr materialGround = std::make_shared<Lambertian>(Color(0.5f, 0.5f, 0.5f));
+    ITexturePtr checker = std::make_shared<CheckerTexture>(Color(0.2f, 0.3f, 0.1f), Color(0.9f, 0.9f, 0.9f));
+    IMaterialPtr materialGround = std::make_shared<Lambertian>(checker);
     scene.addEntity(std::make_shared<EntitySphere>(
         Sphere(Vec3(0.0f, -1000.0f, 0.0f), 1000.0f),
         materialGround
@@ -158,7 +160,7 @@ int main(int argc, char* argv[]) {
         const int width = 1024;
         settings.imageWidth = width;
         settings.imageHeight = (int)(width / aspectRatio);
-        settings.samplesPerPixel = 128;
+        settings.samplesPerPixel = 256;
         settings.maxBounces = 16;
     }
     else if (quality == Quality::Medium) {
@@ -173,7 +175,7 @@ int main(int argc, char* argv[]) {
         settings.imageWidth = width;
         settings.imageHeight = (int)(width / aspectRatio);
         settings.samplesPerPixel = 8;
-        settings.maxBounces = 5;
+        settings.maxBounces = 4;
     }
 
     std::cout << "Rendering scene..." << std::endl;

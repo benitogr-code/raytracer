@@ -1,15 +1,19 @@
 #pragma once
 
-#include "../../common/color.h"
 #include "../../common/material.h"
+#include "../../common/texture.h"
+#include "../textures/solidColor.h"
 
 class Lambertian : public IMaterial {
 public:
-    Lambertian(const Color& albedo)
-    : _albedo(albedo) {}
+    Lambertian(const Color& c)
+    : _albedo(std::make_shared<SolidColor>(c)) {}
+
+    Lambertian(ITexturePtr texture)
+    : _albedo(texture) {}
 
     virtual bool scatter(const Ray& ray, const HitInfo& hit, Color& attenuation, Ray& scattered) const override;
 
 public:
-    Color _albedo;
+    ITexturePtr _albedo;
 };

@@ -12,4 +12,4 @@ The current feature set includes what is covered in the first book in the series
 
 <br/>
 
-<img alt="Test scene" src="images/scene-01.jpg" width="700">
+<img alt="Test scene" src="images/spheres-01.jpg" width="700">

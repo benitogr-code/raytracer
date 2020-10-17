@@ -29,6 +29,7 @@ bool EntitySphere::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) 
         outHit.normal = frontFace ? normal : -normal;
         outHit.frontFace = frontFace;
         outHit.material = material();
+        getUVCoords(normal, outHit.u, outHit.v);
 
         return true;
     }
@@ -44,6 +45,7 @@ bool EntitySphere::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) 
         outHit.normal = frontFace ? normal : -normal;
         outHit.frontFace = frontFace;
         outHit.material = material();
+        getUVCoords(normal, outHit.u, outHit.v);
 
         return true;
     }
@@ -63,4 +65,17 @@ bool EntitySphere::getAABB(float t0, float t1, AABB& bbox) const {
     bbox = AABB::surroundingBox(box0, box1);
 
     return true;
+}
+
+Vec3 EntitySphere::getPosition(float time) const {
+    return geometry().center + (velocity() * time);
+}
+
+void EntitySphere::getUVCoords(const Vec3& p, float& u, float& v) const {
+    // 'p' is a normalized point in the sphere
+    const float phi = atan2(p.z, p.x);
+    const float theta = asin(p.y);
+
+    u = 1-(phi + Math::Pi) / (2.0f * Math::Pi);
+    v = (theta + (Math::Pi / 2.0f)) / Math::Pi;
 }

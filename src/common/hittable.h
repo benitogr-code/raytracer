@@ -13,11 +13,13 @@ struct HitInfo {
         return Vec3::dot(ray.direction, normal) < 0.0f;
     }
 
-    Vec3 point;
-    Vec3 normal;
+    Vec3 point;     // Surface hit position
+    Vec3 normal;    // Surface hit normal
     IMaterialPtr material;
-    float t;
-    bool frontFace;
+    float u;        // [u,v] coordinates (for textures)
+    float v;
+    float t;        // 't' value at ray hit
+    bool frontFace; // Front face hit flag
 };
 
 struct IHittable {

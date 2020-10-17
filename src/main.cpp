@@ -15,6 +15,12 @@ enum class SceneID {
     Spheres,
 };
 
+enum class Quality {
+    Low,
+    Medium,
+    High
+};
+
 SceneID parseScene(int argc, char* argv[]) {
     const char* scene = "";
 
@@ -28,6 +34,27 @@ SceneID parseScene(int argc, char* argv[]) {
     // Check for other scenes here
 
     return SceneID::Spheres;
+}
+
+Quality parseQuality(int argc, char* argv[]) {
+    const char* quality = "";
+
+    for (int i = 0; i < argc - 1; ++i) {
+        if (strcmp(argv[i], "--quality") == 0) {
+            quality = argv[i+1];
+            break;
+        }
+    }
+
+    if (strcmp(quality, "high") == 0) {
+        return Quality::High;
+    }
+
+    if (strcmp(quality, "medium") == 0) {
+        return Quality::Medium;
+    }
+
+    return Quality::Low;
 }
 
 void buildSceneSpheres(Scene& scene) {
@@ -108,8 +135,7 @@ const char* getFilePathForScene(SceneID id) {
 int main(int argc, char* argv[]) {
     // Scene & camera
     const SceneID sceneId = parseScene(argc, argv);
-    Scene scene;
-    buildScene(sceneId, scene);
+    const Quality quality = parseQuality(argc, argv);
 
     const float aspectRatio = 16.0f / 9.0f;
 
@@ -122,14 +148,33 @@ int main(int argc, char* argv[]) {
     Camera camera(25.0f, aspectRatio, aperture, focusDistance, shutterTime);
     camera.lookAt(camPos, camTarget);
 
+    Scene scene;
+    buildScene(sceneId, scene);
     scene.buildBvh(0.0f, shutterTime);
 
     // Render image
     Renderer::Settings settings;
-    settings.imageWidth = 480;
-    settings.imageHeight = (int)(480 / aspectRatio);
-    settings.samplesPerPixel = 8;
-    settings.maxBounces = 5;
+    if (quality == Quality::High) {
+        const int width = 1024;
+        settings.imageWidth = width;
+        settings.imageHeight = (int)(width / aspectRatio);
+        settings.samplesPerPixel = 128;
+        settings.maxBounces = 16;
+    }
+    else if (quality == Quality::Medium) {
+        const int width = 720;
+        settings.imageWidth = width;
+        settings.imageHeight = (int)(width / aspectRatio);
+        settings.samplesPerPixel = 32;
+        settings.maxBounces = 8;
+    }
+    else {
+        const int width = 480;
+        settings.imageWidth = width;
+        settings.imageHeight = (int)(width / aspectRatio);
+        settings.samplesPerPixel = 8;
+        settings.maxBounces = 5;
+    }
 
     std::cout << "Rendering scene..." << std::endl;
 

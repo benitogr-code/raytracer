@@ -11,5 +11,7 @@ The current feature set includes what is covered in the first book in the series
 - Multi threaded rendering.
 
 <br/>
+<img title="Spheres scene" src="images/spheres-01.jpg" width="700">
 
-<img alt="Test scene" src="images/spheres-01.jpg" width="700">
+<br />
+<img title="Spheres scene with textures and blur" src="images/spheres-02.jpg" width="700">

@@ -20,7 +20,7 @@ public:
         _permutationsZ.resize(PointCount);
 
         for (int i = 0; i < PointCount; ++i) {
-            _values[i] = Math::randf();
+            _values[i] = Vec3::normalize(Vec3::random(-1.0f, 1.0f));
             _permutationsX[i] = i;
             _permutationsY[i] = i;
             _permutationsZ[i] = i;
@@ -32,20 +32,15 @@ public:
     }
 
     float noise(const Vec3& p) const {
-        float u = p.x - floor(p.x);
-        float v = p.y - floor(p.y);
-        float w = p.z - floor(p.z);
-
-        // Hermitian smoothing
-        u = u*u*(3-2*u);
-        v = v*v*(3-2*v);
-        w = w*w*(3-2*w);
+        const float u = p.x - floor(p.x);
+        const float v = p.y - floor(p.y);
+        const float w = p.z - floor(p.z);
 
         // Trilinear interpolation
         const int i = static_cast<int>(floor(p.x));
         const int j = static_cast<int>(floor(p.y));
         const int k = static_cast<int>(floor(p.z));
-        float samples[2][2][2];
+        Vec3 samples[2][2][2];
 
         for (int di = 0; di < 2; di++) {
             for (int dj = 0; dj < 2; dj++) {
@@ -59,14 +54,20 @@ public:
             }
         }
 
+        // Hermitian smoothing
+        const float uu = u*u*(3-2*u);
+        const float vv = v*v*(3-2*v);
+        const float ww = w*w*(3-2*w);
+
         float result = 0.0f;
         for (int di = 0; di < 2; di++) {
             for (int dj = 0; dj < 2; dj++) {
                 for (int dk = 0; dk < 2; dk++) {
-                    result += (di*u + (1-di)*(1-u))*
-                                (dj*v + (1-dj)*(1-v))*
-                                (dk*w + (1-dk)*(1-w))*
-                                samples[di][dj][dk];
+                    const Vec3 weight(u-di, v-dj, w-dk);
+                    result += (di*uu + (1-di)*(1-uu))
+                            * (dj*vv + (1-dj)*(1-vv))
+                            * (dk*ww + (1-dk)*(1-ww))
+                            * Vec3::dot(samples[di][dj][dk], weight);
                 }
             }
         }
@@ -74,8 +75,22 @@ public:
         return result;
     }
 
+    float turbulence(const Vec3& p, int depth=7) const {
+        float result = 0.0f;
+        float weight = 1.0;
+        Vec3 tmp = p;
+
+        for (int i = 0; i < depth; i++) {
+            result += weight * noise(tmp);
+            weight *= 0.5;
+            tmp *= 2.0f;
+        }
+
+        return fabs(result);
+    }
+
 private:
-    std::vector<float> _values;
+    std::vector<Vec3>  _values;
     std::vector<int>   _permutationsX;
     std::vector<int>   _permutationsY;
     std::vector<int>   _permutationsZ;

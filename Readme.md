@@ -8,7 +8,7 @@ The current feature set includes what is covered in the first two books in the s
 - Materials: diffuse, metal and glass.
 - Textures: Flat color, noise, ...
 - Camera properties: position, fov, focus distance...
-- Bounding hierachical volumes to speed up scene traversal.
+- Bounding volume hierarchy to speed up scene traversal.
 - Integrated STB library to generate PNG image output.
 - Multi threaded rendering.
 

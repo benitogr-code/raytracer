@@ -31,6 +31,10 @@ namespace Math {
         return min + (max-min)*randf();
     }
 
+    inline int randInt(int min, int max) {
+        return static_cast<int>(randf(min, max+1));
+    }
+
     inline float clampf(float value, float min, float max) {
         return std::max(min, std::min(value, max));
     }

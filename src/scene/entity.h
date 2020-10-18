@@ -2,13 +2,33 @@
 
 #include <memory>
 
-#include "../common/geometry.h"
-#include "../common/hitInfo.h"
-#include "../common/material.h"
+#include "../common/hittable.h"
 
-struct IEntity {
-    virtual void setMaterial(IMaterialPtr material) = 0;
-    virtual bool hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const = 0;
+template<typename TGeom>
+class Entity : public IHittable {
+public:
+    Entity(const TGeom& geometry, IMaterialPtr material)
+        : _geometry(geometry)
+        , _material(material)
+        , _velocity(0.0f, 0.0f, 0.0f) {}
+
+    void setVelocity(const Vec3& velocity) {
+        _velocity = velocity;
+    };
+
+protected:
+    const TGeom& geometry() const {
+        return _geometry;
+    }
+    const IMaterialPtr& material() const {
+        return _material;
+    }
+    const Vec3& velocity() const {
+        return _velocity;
+    }
+
+private:
+    TGeom _geometry;
+    IMaterialPtr _material;
+    Vec3 _velocity;
 };
-
-typedef std::shared_ptr<IEntity> IEntityPtr;

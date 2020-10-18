@@ -2,19 +2,19 @@
 
 #include <vector>
 
-#include "entity.h"
+#include "../common/hittable.h"
+#include "bvh.h"
 
 class Scene {
-private:
-    typedef std::vector<IEntityPtr> Entities;
-
 public:
-    void addEntity(IEntityPtr entity) {
-        _entities.push_back(entity);
+    void build(std::vector<IHittablePtr> entities, float t0, float t1) {
+        _bvh = std::make_shared<BvhTree>(entities, t0, t1);
     }
 
-    bool rayTrace(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const;
+    bool rayTrace(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const {
+        return _bvh->hit(ray, tMin, tMax, outHit);
+    }
 
 private:
-    Entities _entities;
+    BvhTreePtr _bvh;
 };

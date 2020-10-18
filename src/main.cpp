@@ -129,7 +129,7 @@ void randomSpheres(std::vector<IHittablePtr>& entities) {
 void perlinSpheres(std::vector<IHittablePtr>& entities) {
     entities.clear();
 
-    auto texture = std::make_shared<Noise>();
+    auto texture = std::make_shared<Noise>(4.0f);
 
     entities.push_back(std::make_shared<EntitySphere>(
         Sphere(Vec3(0.0f, -1000.0f, 0.0f), 1000.0f),

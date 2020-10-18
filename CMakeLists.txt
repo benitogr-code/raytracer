@@ -17,6 +17,7 @@ set(APP_SOURCES
 	src/common/imageBuffer.h
 	src/common/material.h
 	src/common/math.h
+	src/common/perlin.h
 	src/common/texture.h
 	src/common/vector.h
 	src/scene/materials/dielectric.h
@@ -25,7 +26,8 @@ set(APP_SOURCES
 	src/scene/materials/lambertian.cpp
 	src/scene/materials/metal.h
 	src/scene/materials/metal.cpp
-	src/scene/textures/checkerTexture.h
+	src/scene/textures/checker.h
+	src/scene/textures/noise.h
 	src/scene/textures/solidColor.h
 	src/scene/bvh.h
 	src/scene/bvh.cpp

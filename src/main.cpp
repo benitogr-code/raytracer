@@ -6,7 +6,8 @@
 #include "scene/materials/dielectric.h"
 #include "scene/materials/lambertian.h"
 #include "scene/materials/metal.h"
-#include "scene/textures/checkerTexture.h"
+#include "scene/textures/checker.h"
+#include "scene/textures/noise.h"
 #include "scene/camera.h"
 #include "scene/scene.h"
 #include "scene/entitySphere.h"
@@ -14,7 +15,7 @@
 
 enum class SceneID {
     RandomSpheres,
-    TwoSpheres,
+    PerlinSpheres,
 };
 
 enum class Quality {
@@ -33,8 +34,8 @@ SceneID parseScene(int argc, char* argv[]) {
         }
     }
 
-    if (strcmp(scene, "two-spheres") == 0) {
-        return SceneID::TwoSpheres;
+    if (strcmp(scene, "perlin-spheres") == 0) {
+        return SceneID::PerlinSpheres;
     }
 
     return SceneID::RandomSpheres;
@@ -64,7 +65,7 @@ Quality parseQuality(int argc, char* argv[]) {
 void randomSpheres(std::vector<IHittablePtr>& entities) {
     entities.clear();
 
-    ITexturePtr checker = std::make_shared<CheckerTexture>(Color(0.2f, 0.3f, 0.1f), Color(0.9f, 0.9f, 0.9f));
+    ITexturePtr checker = std::make_shared<Checker>(Color(0.2f, 0.3f, 0.1f), Color(0.9f, 0.9f, 0.9f));
     IMaterialPtr materialGround = std::make_shared<Lambertian>(checker);
 
     entities.push_back(std::make_shared<EntitySphere>(
@@ -125,17 +126,17 @@ void randomSpheres(std::vector<IHittablePtr>& entities) {
     ));
 }
 
-void twoSpheres(std::vector<IHittablePtr>& entities) {
+void perlinSpheres(std::vector<IHittablePtr>& entities) {
     entities.clear();
 
-    auto texture = std::make_shared<CheckerTexture>(Color(0.2f, 0.3f, 0.1f), Color(0.9f, 0.9f, 0.9f));
+    auto texture = std::make_shared<Noise>();
 
     entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(0.0f, -10.0f, 0.0f), 10.0f),
+        Sphere(Vec3(0.0f, -1000.0f, 0.0f), 1000.0f),
         std::make_shared<Lambertian>(texture)
     ));
     entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(0.0f, 10.0f, 0.0f), 10.0f),
+        Sphere(Vec3(0.0f, 2.0f, 0.0f), 2.0f),
         std::make_shared<Lambertian>(texture)
     ));
 }
@@ -145,8 +146,8 @@ const char* getFilePathForScene(SceneID id) {
         return ".output/random-spheres.png";
     }
 
-    if (id == SceneID::TwoSpheres) {
-        return ".output/two-spheres.png";
+    if (id == SceneID::PerlinSpheres) {
+        return ".output/perlin-spheres.png";
     }
 
     return ".output/image.png";
@@ -173,12 +174,12 @@ int main(int argc, char* argv[]) {
 
         randomSpheres(entities);
     }
-    else if (sceneId == SceneID::TwoSpheres) {
+    else if (sceneId == SceneID::PerlinSpheres) {
         camPos = Vec3(13.0f, 2.0f, 3.0f);
         camTarget = Vec3(0.0f, 0.0f, 0.0f);
         vFov = 20.0f;
 
-        twoSpheres(entities);
+        perlinSpheres(entities);
     }
 
     Camera camera(vFov, aspectRatio, aperture, focusDistance, shutterTime);

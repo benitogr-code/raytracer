@@ -3,13 +3,13 @@
 #include "../../common/texture.h"
 #include "solidColor.h"
 
-class CheckerTexture : public ITexture {
+class Checker : public ITexture {
 public:
-    CheckerTexture(ITexturePtr t1, ITexturePtr t2)
+    Checker(ITexturePtr t1, ITexturePtr t2)
     : _texture1(t1)
     , _texture2(t2) {}
 
-    CheckerTexture(const Color& c1, const Color& c2)
+    Checker(const Color& c1, const Color& c2)
     : _texture1(std::make_shared<SolidColor>(c1))
     , _texture2(std::make_shared<SolidColor>(c2)) {}
 

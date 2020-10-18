@@ -13,7 +13,8 @@
 #include "renderer.h"
 
 enum class SceneID {
-    Spheres,
+    RandomSpheres,
+    TwoSpheres,
 };
 
 enum class Quality {
@@ -32,9 +33,11 @@ SceneID parseScene(int argc, char* argv[]) {
         }
     }
 
-    // Check for other scenes here
+    if (strcmp(scene, "two-spheres") == 0) {
+        return SceneID::TwoSpheres;
+    }
 
-    return SceneID::Spheres;
+    return SceneID::RandomSpheres;
 }
 
 Quality parseQuality(int argc, char* argv[]) {
@@ -58,8 +61,8 @@ Quality parseQuality(int argc, char* argv[]) {
     return Quality::Low;
 }
 
-void buildSceneSpheres(Scene& scene, float t0, float t1) {
-    std::vector<IHittablePtr> entities;
+void randomSpheres(std::vector<IHittablePtr>& entities) {
+    entities.clear();
 
     ITexturePtr checker = std::make_shared<CheckerTexture>(Color(0.2f, 0.3f, 0.1f), Color(0.9f, 0.9f, 0.9f));
     IMaterialPtr materialGround = std::make_shared<Lambertian>(checker);
@@ -120,20 +123,30 @@ void buildSceneSpheres(Scene& scene, float t0, float t1) {
         Sphere(Vec3(4.0f, 1.0f, 0.0f), 1.0f),
         material3
     ));
-
-    scene.build(entities, t0, t1);
 }
 
-void buildScene(SceneID id, Camera& camera, Scene& outScene) {
-    if (id == SceneID::Spheres) {
-        std::cout << "Building scene: Spheres" << std::endl;
-        buildSceneSpheres(outScene, 0.0f, camera.getShutterTime());
-    }
+void twoSpheres(std::vector<IHittablePtr>& entities) {
+    entities.clear();
+
+    auto texture = std::make_shared<CheckerTexture>(Color(0.2f, 0.3f, 0.1f), Color(0.9f, 0.9f, 0.9f));
+
+    entities.push_back(std::make_shared<EntitySphere>(
+        Sphere(Vec3(0.0f, -10.0f, 0.0f), 10.0f),
+        std::make_shared<Lambertian>(texture)
+    ));
+    entities.push_back(std::make_shared<EntitySphere>(
+        Sphere(Vec3(0.0f, 10.0f, 0.0f), 10.0f),
+        std::make_shared<Lambertian>(texture)
+    ));
 }
 
 const char* getFilePathForScene(SceneID id) {
-    if (id == SceneID::Spheres) {
-        return ".output/spheres.png";
+    if (id == SceneID::RandomSpheres) {
+        return ".output/random-spheres.png";
+    }
+
+    if (id == SceneID::TwoSpheres) {
+        return ".output/two-spheres.png";
     }
 
     return ".output/image.png";
@@ -145,17 +158,34 @@ int main(int argc, char* argv[]) {
 
     const float aspectRatio = 16.0f / 9.0f;
 
-    const Vec3 camPos(13.0f, 2.0f, 3.0f);
-    const Vec3 camTarget(0.0f, 0.0f, 0.0f);
-    const float focusDistance = 10.0f;
-    const float aperture = 0.1f;
-    const float shutterTime = 0.4f;
+    Vec3 camPos;
+    Vec3 camTarget;
+    float focusDistance = 10.0f;
+    float aperture = 0.0f;
+    float shutterTime = 0.4f;
+    float vFov = 25.0f;
 
-    Camera camera(25.0f, aspectRatio, aperture, focusDistance, shutterTime);
+    std::vector<IHittablePtr> entities;
+    if (sceneId == SceneID::RandomSpheres) {
+        camPos = Vec3(13.0f, 2.0f, 3.0f);
+        camTarget = Vec3(0.0f, 0.0f, 0.0f);
+        aperture = 0.1f;
+
+        randomSpheres(entities);
+    }
+    else if (sceneId == SceneID::TwoSpheres) {
+        camPos = Vec3(13.0f, 2.0f, 3.0f);
+        camTarget = Vec3(0.0f, 0.0f, 0.0f);
+        vFov = 20.0f;
+
+        twoSpheres(entities);
+    }
+
+    Camera camera(vFov, aspectRatio, aperture, focusDistance, shutterTime);
     camera.lookAt(camPos, camTarget);
 
     Scene scene;
-    buildScene(sceneId, camera, scene);
+    scene.build(entities, 0.0f, camera.shutterTime());
 
     // Render image
     Renderer::Settings settings;

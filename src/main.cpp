@@ -58,10 +58,13 @@ Quality parseQuality(int argc, char* argv[]) {
     return Quality::Low;
 }
 
-void buildSceneSpheres(Scene& scene) {
+void buildSceneSpheres(Scene& scene, float t0, float t1) {
+    std::vector<IHittablePtr> entities;
+
     ITexturePtr checker = std::make_shared<CheckerTexture>(Color(0.2f, 0.3f, 0.1f), Color(0.9f, 0.9f, 0.9f));
     IMaterialPtr materialGround = std::make_shared<Lambertian>(checker);
-    scene.addEntity(std::make_shared<EntitySphere>(
+
+    entities.push_back(std::make_shared<EntitySphere>(
         Sphere(Vec3(0.0f, -1000.0f, 0.0f), 1000.0f),
         materialGround
     ));
@@ -96,33 +99,35 @@ void buildSceneSpheres(Scene& scene) {
 
             auto sphere = std::make_shared<EntitySphere>(Sphere(position, 0.2f), materialSphere);
             sphere->setVelocity(velocity);
-            scene.addEntity(sphere);
+            entities.push_back(sphere);
         }
     }
 
     IMaterialPtr material1 = std::make_shared<Dielectric>(1.5f);
-    scene.addEntity(std::make_shared<EntitySphere>(
+    entities.push_back(std::make_shared<EntitySphere>(
         Sphere(Vec3(0.0f, 1.0f, 0.0f), 1.0f),
         material1
     ));
 
     IMaterialPtr material2 = std::make_shared<Lambertian>(Color(0.4f, 0.2f, 0.1f));
-    scene.addEntity(std::make_shared<EntitySphere>(
+    entities.push_back(std::make_shared<EntitySphere>(
         Sphere(Vec3(-4.0f, 1.0f, 0.0f), 1.0f),
         material2
     ));
 
     IMaterialPtr material3 = std::make_shared<Metal>(Color(0.7f, 0.6f, 0.5f), 0.0f);
-        scene.addEntity(std::make_shared<EntitySphere>(
+    entities.push_back(std::make_shared<EntitySphere>(
         Sphere(Vec3(4.0f, 1.0f, 0.0f), 1.0f),
         material3
     ));
+
+    scene.build(entities, t0, t1);
 }
 
-void buildScene(SceneID id, Scene& outScene) {
+void buildScene(SceneID id, Camera& camera, Scene& outScene) {
     if (id == SceneID::Spheres) {
         std::cout << "Building scene: Spheres" << std::endl;
-        buildSceneSpheres(outScene);
+        buildSceneSpheres(outScene, 0.0f, camera.getShutterTime());
     }
 }
 
@@ -135,7 +140,6 @@ const char* getFilePathForScene(SceneID id) {
 }
 
 int main(int argc, char* argv[]) {
-    // Scene & camera
     const SceneID sceneId = parseScene(argc, argv);
     const Quality quality = parseQuality(argc, argv);
 
@@ -151,8 +155,7 @@ int main(int argc, char* argv[]) {
     camera.lookAt(camPos, camTarget);
 
     Scene scene;
-    buildScene(sceneId, scene);
-    scene.buildBvh(0.0f, shutterTime);
+    buildScene(sceneId, camera, scene);
 
     // Render image
     Renderer::Settings settings;

@@ -34,7 +34,6 @@ set(APP_SOURCES
 	src/scene/entitySphere.h
 	src/scene/entitySphere.cpp
 	src/scene/scene.h
-	src/scene/scene.cpp
 	src/main.cpp
 	src/renderer.h
 	src/renderer.cpp

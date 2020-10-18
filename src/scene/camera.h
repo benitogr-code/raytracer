@@ -42,6 +42,10 @@ public:
         return Ray(origin, Vec3::normalize(vpBL + u*vpH + v*vpV - origin), Math::randf(0.0f, _shutterTime));
     }
 
+    inline float getShutterTime() const {
+        return _shutterTime;
+    }
+
 private:
     Vec3  _position;
     Vec3  _fwd;

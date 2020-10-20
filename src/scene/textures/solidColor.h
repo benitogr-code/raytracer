@@ -5,7 +5,7 @@
 class SolidColor : public ITexture {
 public:
     SolidColor(const Color& c)
-        : _color(c) {}
+    : _color(c) {}
 
     // ITexture
     virtual Color value(float u, float v, const Vec3& p) const override {

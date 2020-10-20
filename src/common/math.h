@@ -39,6 +39,10 @@ namespace Math {
         return std::max(min, std::min(value, max));
     }
 
+    inline float clampInt(int value, int min, int max) {
+        return std::max(min, std::min(value, max));
+    }
+
     inline float degreesToRadians(float value) {
         return (value * Pi) / 180.0f;
     }

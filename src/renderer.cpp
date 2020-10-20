@@ -8,14 +8,9 @@
 #include <sstream>
 #include <thread>
 
+#include "common/stbHelper.h"
 #include "scene/camera.h"
 #include "scene/scene.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "common/stb/stb_image.h"
-
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "common/stb/stb_image_write.h"
 
 namespace Renderer {
 
@@ -156,7 +151,7 @@ ImageBufferPtr render(const Scene& scene, const Camera& camera, const Settings& 
 void savePng(const ImageBufferPtr& image, const char* szFile) {
     const int stride = image->width() * image->channels();
     const unsigned char* end = image->data() + (image->width() * image->channels() * (image->height() - 1));
-    stbi_write_png(szFile, image->width(), image->height(), image->channels(), end, -stride);
+    StbHelper::writePng(szFile, image->width(), image->height(), image->channels(), end, -stride);
 }
 
 } // namespace Renderer

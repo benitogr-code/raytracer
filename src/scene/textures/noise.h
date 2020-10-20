@@ -3,12 +3,12 @@
 #include "../../common/perlin.h"
 #include "../../common/texture.h"
 
-class Noise : public ITexture {
+class NoiseTexture : public ITexture {
 public:
-    Noise()
+    NoiseTexture()
     : _scale(1.0f) {}
 
-    Noise(float scale)
+    NoiseTexture(float scale)
     : _scale(scale) {}
 
     // ITexture

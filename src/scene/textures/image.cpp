@@ -1,7 +1,6 @@
 #include "image.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "../../common/stb/stb_image.h"
+#include "../../common/stbHelper.h"
 
 ImageTexture::ImageTexture()
 : _width(0)
@@ -9,7 +8,7 @@ ImageTexture::ImageTexture()
 
 ImageTexture::ImageTexture(const char* szFilePath) {
     int componentsPerPixel = BytesPerPixel;
-    auto imageData = stbi_load(szFilePath, &_width, &_height, &componentsPerPixel, componentsPerPixel);
+    auto imageData = StbHelper::load(szFilePath, &_width, &_height, &componentsPerPixel, componentsPerPixel);
 
     if (imageData != nullptr) {
         const int size = _width * _height * componentsPerPixel;

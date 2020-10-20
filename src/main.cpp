@@ -130,7 +130,7 @@ void randomSpheres(std::vector<IHittablePtr>& entities) {
 void texturedSpheres(std::vector<IHittablePtr>& entities) {
     entities.clear();
 
-    auto earthTexture = std::make_shared<ImageTexture>("assets/earthmap.jpg");
+    auto earthTexture = std::make_shared<ImageTexture>("resources/earthmap.jpg");
     auto noiseTexture = std::make_shared<NoiseTexture>(4.0f);
 
     entities.push_back(std::make_shared<EntitySphere>(

@@ -18,6 +18,8 @@ set(APP_SOURCES
     src/common/material.h
     src/common/math.h
     src/common/perlin.h
+    src/common/stbHelper.h
+    src/common/stbHelper.cpp
     src/common/texture.h
     src/common/vector.h
     src/scene/materials/dielectric.h

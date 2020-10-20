@@ -1,6 +1,6 @@
 ## Overview
 
-A brute force path tracer based on the [Raytracing in one weekend](https://raytracing.github.io/) book series.
+A path tracer based on the [Raytracing in one weekend](https://raytracing.github.io/) book series.
 
 The current feature set includes what is covered in the first and part of the second book with some additions:
 

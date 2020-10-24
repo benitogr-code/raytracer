@@ -2,6 +2,10 @@
 
 #include "../../common/hittable.h"
 
+Color Dielectric::emit(float u, float v, const Vec3& pos) const {
+    return Color(0.0f, 0.0f, 0.0f);
+}
+
 bool Dielectric::scatter(const Ray& ray, const HitInfo& hit, Color& attenuation, Ray& scattered) const {
     const float etaiOverEtat = hit.frontFace ? (1.0f / _refractionIndex) : _refractionIndex;
 

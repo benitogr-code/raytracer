@@ -12,8 +12,8 @@ public:
     : _scale(scale) {}
 
     // ITexture
-    virtual Color value(float u, float v, const Vec3& p) const override {
-        return Color(1.0f, 1.0f, 1.0f) * 0.5f * (1.0f + sinf(_scale*p.z + 10.0f*_perlin.turbulence(p)));
+    virtual Color value(float u, float v, const Vec3& pos) const override {
+        return Color(1.0f, 1.0f, 1.0f) * 0.5f * (1.0f + sinf(_scale*pos.z + 10.0f*_perlin.turbulence(pos)));
     }
 
 private:

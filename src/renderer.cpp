@@ -110,19 +110,20 @@ private:
         if (bounces <= 0)
             return Color(0.0f, 0.0f, 0.0f);
 
+        const Color background = scene.getBackgroundColor();
+
         HitInfo hit;
-        if (scene.rayTrace(ray, 0.005f, Math::MaxFloat, hit)) {
-            Ray scattered;
-            Color attenuation;
-            if (!hit.material->scatter(ray, hit, attenuation, scattered))
-                return Color(0.0f, 0.0f, 0.0f);
+        if (!scene.rayTrace(ray, 0.005f, Math::MaxFloat, hit))
+            return background;
 
-            return attenuation * raytrace(scene, scattered, bounces-1);
-        }
+        const Color emitted = hit.material->emit(hit.u, hit.v, hit.point);
 
-        const float t = 0.5f*(ray.direction.y + 1.0f);
+        Ray scattered;
+        Color attenuation;
+        if (!hit.material->scatter(ray, hit, attenuation, scattered))
+            return emitted;
 
-        return (1.0f-t)*Color(1.0f, 1.0f, 1.0f) + t*Color(0.5f, 0.7f, 1.0f);
+        return emitted + (attenuation * raytrace(scene, scattered, bounces-1));
     }
 };
 

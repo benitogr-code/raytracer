@@ -165,6 +165,7 @@ int main(int argc, char* argv[]) {
 
     const float aspectRatio = 16.0f / 9.0f;
 
+    Color background(0.0f, 0.0f, 0.0f);
     Vec3 camPos;
     Vec3 camTarget;
     float focusDistance = 10.0f;
@@ -174,6 +175,7 @@ int main(int argc, char* argv[]) {
 
     std::vector<IHittablePtr> entities;
     if (sceneId == SceneID::RandomSpheres) {
+        background = Color(0.7f, 0.8f, 1.0f);
         camPos = Vec3(13.0f, 2.0f, 3.0f);
         camTarget = Vec3(0.0f, 0.0f, 0.0f);
         aperture = 0.1f;
@@ -181,6 +183,7 @@ int main(int argc, char* argv[]) {
         randomSpheres(entities);
     }
     else if (sceneId == SceneID::TexturedSpheres) {
+        background = Color(0.7f, 0.8f, 1.0f);
         camPos = Vec3(0.0f, 2.0f, 12.0f);
         camTarget = Vec3(0.0f, 1.2f, 0.0f);
         vFov = 30.0f;
@@ -192,6 +195,7 @@ int main(int argc, char* argv[]) {
     camera.lookAt(camPos, camTarget);
 
     Scene scene;
+    scene.setBackgroundColor(background);
     scene.build(entities, 0.0f, camera.shutterTime());
 
     // Render image

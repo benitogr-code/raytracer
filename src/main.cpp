@@ -1,7 +1,6 @@
 #include <iostream>
 
 #include "common/color.h"
-#include "common/geometry.h"
 #include "common/imageBuffer.h"
 #include "scene/materials/dielectric.h"
 #include "scene/materials/lambertian.h"

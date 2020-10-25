@@ -2,13 +2,14 @@
 
 A path tracer based on the [Raytracing in one weekend](https://raytracing.github.io/) book series.
 
-The current feature set includes what is covered in the first and part of the second book with some additions:
+The current feature set includes what is covered in the first and part of the second book:
 
-- Geometry: Spheres.
-- Materials: diffuse, metal and glass.
-- Textures: Flat color, image texture, perlin noise.
-- Camera: fov, focus distance, motion blur...
+- Geometry: Spheres, Rectangle shapes.
+- Materials (metal, glass...), multiple Texture types and Light sources.
+- Configurable camera: fov, focus distance, motion blur...
 - Bounding volume hierarchy to speed up scene traversal.
+
+Additional features:
 - Integrated STB library to generate PNG image output.
 - Multi threaded rendering.
 
@@ -27,3 +28,7 @@ The main executable has multiple scene samples which can be rendered at differen
 **Textures**
 <br />
 <img title="Perlin noise" src="images/textured-spheres.jpg" width="512">
+
+**Light sources**
+<br />
+<img title="Lights" src="images/lights.jpg" width="512">

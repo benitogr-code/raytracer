@@ -25,6 +25,7 @@ set(APP_SOURCES
     src/common/vector.h
     src/scene/materials/dielectric.h
     src/scene/materials/dielectric.cpp
+    src/scene/materials/diffuseLight.h
     src/scene/materials/lambertian.h
     src/scene/materials/lambertian.cpp
     src/scene/materials/metal.h
@@ -38,6 +39,8 @@ set(APP_SOURCES
     src/scene/bvh.cpp
     src/scene/camera.h
     src/scene/entity.h
+    src/scene/entityRect.h
+    src/scene/entityRect.cpp
     src/scene/entitySphere.h
     src/scene/entitySphere.cpp
     src/scene/scene.h

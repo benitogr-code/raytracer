@@ -11,8 +11,9 @@ include_directories ("${PROJECT_SOURCE_DIR}/src")
 set(APP_SOURCES
     src/common/stb/stb_image.h
     src/common/stb/stb_image_write.h
+    src/common/aabb.h
+    src/common/aabb.cpp
     src/common/color.h
-    src/common/geometry.h
     src/common/hittable.h
     src/common/imageBuffer.h
     src/common/material.h
@@ -24,6 +25,7 @@ set(APP_SOURCES
     src/common/vector.h
     src/scene/materials/dielectric.h
     src/scene/materials/dielectric.cpp
+    src/scene/materials/diffuseLight.h
     src/scene/materials/lambertian.h
     src/scene/materials/lambertian.cpp
     src/scene/materials/metal.h
@@ -37,6 +39,8 @@ set(APP_SOURCES
     src/scene/bvh.cpp
     src/scene/camera.h
     src/scene/entity.h
+    src/scene/entityRect.h
+    src/scene/entityRect.cpp
     src/scene/entitySphere.h
     src/scene/entitySphere.cpp
     src/scene/scene.h

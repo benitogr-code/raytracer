@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../common/geometry.h"
+#include "../common/hittable.h"
 
 class Camera {
 public:

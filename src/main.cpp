@@ -1,9 +1,9 @@
 #include <iostream>
 
 #include "common/color.h"
-#include "common/geometry.h"
 #include "common/imageBuffer.h"
 #include "scene/materials/dielectric.h"
+#include "scene/materials/diffuseLight.h"
 #include "scene/materials/lambertian.h"
 #include "scene/materials/metal.h"
 #include "scene/textures/checker.h"
@@ -11,12 +11,14 @@
 #include "scene/textures/noise.h"
 #include "scene/camera.h"
 #include "scene/scene.h"
+#include "scene/entityRect.h"
 #include "scene/entitySphere.h"
 #include "renderer.h"
 
 enum class SceneID {
     RandomSpheres,
-    TexturedSpheres,
+    TexturesText,
+    LightTest
 };
 
 enum class Quality {
@@ -36,7 +38,11 @@ SceneID parseScene(int argc, char* argv[]) {
     }
 
     if (strcmp(scene, "textures") == 0) {
-        return SceneID::TexturedSpheres;
+        return SceneID::TexturesText;
+    }
+
+    if (strcmp(scene, "lights") == 0) {
+        return SceneID::LightTest;
     }
 
     return SceneID::RandomSpheres;
@@ -127,7 +133,7 @@ void randomSpheres(std::vector<IHittablePtr>& entities) {
     ));
 }
 
-void texturedSpheres(std::vector<IHittablePtr>& entities) {
+void texturesTest(std::vector<IHittablePtr>& entities) {
     entities.clear();
 
     auto earthTexture = std::make_shared<ImageTexture>("resources/earthmap.jpg");
@@ -147,13 +153,48 @@ void texturedSpheres(std::vector<IHittablePtr>& entities) {
     ));
 }
 
+void lightsTest(std::vector<IHittablePtr>& entities) {
+    entities.clear();
+
+    auto noiseTexture = std::make_shared<NoiseTexture>(4.0f);
+
+    entities.push_back(std::make_shared<EntitySphere>(
+        Sphere(Vec3(0.0f, -1000.0f, 0.0f), 1000.0f),
+        std::make_shared<Lambertian>(Color(0.5f, 0.5f, 0.5f))
+    ));
+    entities.push_back(std::make_shared<EntitySphere>(
+        Sphere(Vec3(0.0f, 2.0f, 0.0f), 2.0f),
+        std::make_shared<Lambertian>(noiseTexture)
+    ));
+
+    // Light 1
+    entities.push_back(std::make_shared<EntitySphere>(
+        Sphere(Vec3(-2.0f, 4.0f, 4.0f), 1.0f),
+        std::make_shared<DiffuseLight>(Color(0.8f, 0.8f, 0.2f))
+    ));
+    // Light 2
+    entities.push_back(std::make_shared<EntityRect>(
+        Rect(
+            Vec3(1.0f, 0.5f, -2.2f),
+            Vec3(3.0f, 0.5f, -2.2f),
+            Vec3(3.0f, 2.5f, -2.2f),
+            Vec3(1.0f, 2.5f, -2.2f)
+        ),
+        std::make_shared<DiffuseLight>(Color(1.0f, 1.0f, 1.0f))
+    ));
+}
+
 const char* getFilePathForScene(SceneID id) {
     if (id == SceneID::RandomSpheres) {
         return ".output/random-spheres.png";
     }
 
-    if (id == SceneID::TexturedSpheres) {
-        return ".output/textured-spheres.png";
+    if (id == SceneID::TexturesText) {
+        return ".output/textures-test.png";
+    }
+
+    if (id == SceneID::LightTest) {
+        return ".output/lights-tests.png";
     }
 
     return ".output/image.png";
@@ -165,6 +206,7 @@ int main(int argc, char* argv[]) {
 
     const float aspectRatio = 16.0f / 9.0f;
 
+    Color background(0.0f, 0.0f, 0.0f);
     Vec3 camPos;
     Vec3 camTarget;
     float focusDistance = 10.0f;
@@ -174,24 +216,34 @@ int main(int argc, char* argv[]) {
 
     std::vector<IHittablePtr> entities;
     if (sceneId == SceneID::RandomSpheres) {
+        background = Color(0.7f, 0.8f, 1.0f);
         camPos = Vec3(13.0f, 2.0f, 3.0f);
         camTarget = Vec3(0.0f, 0.0f, 0.0f);
         aperture = 0.1f;
 
         randomSpheres(entities);
     }
-    else if (sceneId == SceneID::TexturedSpheres) {
+    else if (sceneId == SceneID::TexturesText) {
+        background = Color(0.7f, 0.8f, 1.0f);
         camPos = Vec3(0.0f, 2.0f, 12.0f);
         camTarget = Vec3(0.0f, 1.2f, 0.0f);
         vFov = 30.0f;
 
-        texturedSpheres(entities);
+        texturesTest(entities);
+    }
+    else if (sceneId == SceneID::LightTest) {
+        //background = Color(0.7f, 0.8f, 1.0f);
+        camPos = Vec3(26.0f, 3.0f, 6.0f);
+        camTarget = Vec3(0.0f, 2.0f, 0.0f);
+
+        lightsTest(entities);
     }
 
     Camera camera(vFov, aspectRatio, aperture, focusDistance, shutterTime);
     camera.lookAt(camPos, camTarget);
 
     Scene scene;
+    scene.setBackgroundColor(background);
     scene.build(entities, 0.0f, camera.shutterTime());
 
     // Render image

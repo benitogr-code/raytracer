@@ -21,7 +21,7 @@ ImageTexture::ImageTexture(const char* szFilePath) {
     }
 }
 
-Color ImageTexture::value(float u, float v, const Vec3& p) const {
+Color ImageTexture::value(float u, float v, const Vec3& pos) const {
     if (_data.size() == 0) {
         return Color(0.0f, 1.0f, 1.0f);
     }

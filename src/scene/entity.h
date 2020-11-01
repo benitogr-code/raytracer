@@ -4,12 +4,10 @@
 
 #include "../common/hittable.h"
 
-template<typename TGeom>
 class Entity : public IHittable {
 public:
-    Entity(const TGeom& geometry, IMaterialPtr material)
-        : _geometry(geometry)
-        , _material(material)
+    Entity(IMaterialPtr material)
+        : _material(material)
         , _velocity(0.0f, 0.0f, 0.0f) {}
 
     void setVelocity(const Vec3& velocity) {
@@ -17,9 +15,6 @@ public:
     };
 
 protected:
-    const TGeom& geometry() const {
-        return _geometry;
-    }
     const IMaterialPtr& material() const {
         return _material;
     }
@@ -28,7 +23,6 @@ protected:
     }
 
 private:
-    TGeom _geometry;
     IMaterialPtr _material;
     Vec3 _velocity;
 };

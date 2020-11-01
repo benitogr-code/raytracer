@@ -14,7 +14,7 @@ public:
     ImageTexture(const char* szFilePath);
 
     // ITexture
-    virtual Color value(float u, float v, const Vec3& p) const override;
+    virtual Color value(float u, float v, const Vec3& pos) const override;
 
 private:
     std::vector<unsigned char> _data;

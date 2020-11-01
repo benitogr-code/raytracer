@@ -13,11 +13,11 @@ public:
     : _texture1(std::make_shared<SolidColor>(c1))
     , _texture2(std::make_shared<SolidColor>(c2)) {}
 
-    virtual Color value(float u, float v, const Vec3& p) const override {
-        const float value = sin(10*p.x) * sin(10*p.y) *sin(10*p.z);
+    virtual Color value(float u, float v, const Vec3& pos) const override {
+        const float value = sin(10*pos.x) * sin(10*pos.y) *sin(10*pos.z);
         const auto& texture = (value < 0.0f) ? _texture1 : _texture2;
 
-        return texture->value(u, v, p);
+        return texture->value(u, v, pos);
     }
 
 private:

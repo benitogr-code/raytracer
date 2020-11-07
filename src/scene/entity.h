@@ -26,3 +26,5 @@ private:
     IMaterialPtr _material;
     Vec3 _velocity;
 };
+
+typedef std::shared_ptr<Entity> EntityPtr;

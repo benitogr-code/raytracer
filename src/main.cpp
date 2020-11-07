@@ -11,6 +11,7 @@
 #include "scene/textures/noise.h"
 #include "scene/camera.h"
 #include "scene/scene.h"
+#include "scene/entityBox.h"
 #include "scene/entityRect.h"
 #include "scene/entitySphere.h"
 #include "renderer.h"
@@ -190,10 +191,10 @@ void lightsTest(std::vector<IHittablePtr>& entities) {
 }
 
 void cornellBox(std::vector<IHittablePtr>& entities) {
-    auto red   = std::make_shared<Lambertian>(Color(0.65f, 0.05f, 0.05f));
-    auto white = std::make_shared<Lambertian>(Color(0.73f, 0.73f, 0.73f));
-    auto green = std::make_shared<Lambertian>(Color(0.12f, 0.45f, 0.15f));
-    auto light = std::make_shared<DiffuseLight>(Color(15.0f, 15.0f, 15.0f));
+    auto matRed   = std::make_shared<Lambertian>(Color(0.65f, 0.05f, 0.05f));
+    auto matWhite = std::make_shared<Lambertian>(Color(0.73f, 0.73f, 0.73f));
+    auto matGreen = std::make_shared<Lambertian>(Color(0.12f, 0.45f, 0.15f));
+    auto matLight = std::make_shared<DiffuseLight>(Color(15.0f, 15.0f, 15.0f));
 
     // Left wall
     entities.push_back(std::make_shared<EntityRect>(
@@ -203,7 +204,7 @@ void cornellBox(std::vector<IHittablePtr>& entities) {
             Vec3(555.0f, 555.0f, 555.0f),
             Vec3(555.0f, 555.0f, 0.0f)
         ),
-        green
+        matGreen
     ));
     // Right wall
     entities.push_back(std::make_shared<EntityRect>(
@@ -213,7 +214,7 @@ void cornellBox(std::vector<IHittablePtr>& entities) {
             Vec3(0.0f, 555.0f, 555.0f),
             Vec3(0.0f, 555.0f, 0.0f)
         ),
-        red
+        matRed
     ));
     // Floor
     entities.push_back(std::make_shared<EntityRect>(
@@ -223,7 +224,7 @@ void cornellBox(std::vector<IHittablePtr>& entities) {
             Vec3(555.0f, 0.0f, 555.0f),
             Vec3(0.0f, 0.0f, 555.0f)
         ),
-        white
+        matWhite
     ));
     // Ceiling
     entities.push_back(std::make_shared<EntityRect>(
@@ -233,7 +234,7 @@ void cornellBox(std::vector<IHittablePtr>& entities) {
             Vec3(555.0f, 555.0f, 555.0f),
             Vec3(0.0f, 555.0f, 555.0f)
         ),
-        white
+        matWhite
     ));
     // Back wall
     entities.push_back(std::make_shared<EntityRect>(
@@ -243,7 +244,7 @@ void cornellBox(std::vector<IHittablePtr>& entities) {
             Vec3(555.0f, 555.0f, 555.0f),
             Vec3(0.0f, 555.0f, 555.0f)
         ),
-        white
+        matWhite
     ));
     // Top light
     entities.push_back(std::make_shared<EntityRect>(
@@ -253,7 +254,17 @@ void cornellBox(std::vector<IHittablePtr>& entities) {
             Vec3(343.0f, 554.0f, 332.0f),
             Vec3(213.0f, 555.0f, 332.0f)
         ),
-        light
+        matLight
+    ));
+
+    // Boxes
+    entities.push_back(std::make_shared<EntityBox>(
+        Vec3(130.0f, 0.0f, 65.0f), Vec3(295.0f, 165.0f, 230.0f),
+        matWhite
+    ));
+    entities.push_back(std::make_shared<EntityBox>(
+        Vec3(265.0f, 0.0f, 295.0f), Vec3(430.0f, 330.0f, 460.0f),
+        matWhite
     ));
 }
 

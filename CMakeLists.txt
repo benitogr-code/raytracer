@@ -39,6 +39,8 @@ set(APP_SOURCES
     src/scene/bvh.cpp
     src/scene/camera.h
     src/scene/entity.h
+    src/scene/entityBox.h
+    src/scene/entityBox.cpp
     src/scene/entityRect.h
     src/scene/entityRect.cpp
     src/scene/entitySphere.h

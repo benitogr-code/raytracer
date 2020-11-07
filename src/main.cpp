@@ -18,7 +18,8 @@
 enum class SceneID {
     RandomSpheres,
     TexturesText,
-    LightTest
+    LightTest,
+    CornellBox
 };
 
 enum class Quality {
@@ -43,6 +44,10 @@ SceneID parseScene(int argc, char* argv[]) {
 
     if (strcmp(scene, "lights") == 0) {
         return SceneID::LightTest;
+    }
+
+    if (strcmp(scene, "cornellbox") == 0) {
+        return SceneID::CornellBox;
     }
 
     return SceneID::RandomSpheres;
@@ -184,6 +189,74 @@ void lightsTest(std::vector<IHittablePtr>& entities) {
     ));
 }
 
+void cornellBox(std::vector<IHittablePtr>& entities) {
+    auto red   = std::make_shared<Lambertian>(Color(0.65f, 0.05f, 0.05f));
+    auto white = std::make_shared<Lambertian>(Color(0.73f, 0.73f, 0.73f));
+    auto green = std::make_shared<Lambertian>(Color(0.12f, 0.45f, 0.15f));
+    auto light = std::make_shared<DiffuseLight>(Color(15.0f, 15.0f, 15.0f));
+
+    // Left wall
+    entities.push_back(std::make_shared<EntityRect>(
+        Rect(
+            Vec3(555.0f, 0.0f, 0.0f),
+            Vec3(555.0f, 0.0f, 555.0f),
+            Vec3(555.0f, 555.0f, 555.0f),
+            Vec3(555.0f, 555.0f, 0.0f)
+        ),
+        green
+    ));
+    // Right wall
+    entities.push_back(std::make_shared<EntityRect>(
+        Rect(
+            Vec3(0.0f, 0.0f, 0.0f),
+            Vec3(0.0f, 0.0f, 555.0f),
+            Vec3(0.0f, 555.0f, 555.0f),
+            Vec3(0.0f, 555.0f, 0.0f)
+        ),
+        red
+    ));
+    // Floor
+    entities.push_back(std::make_shared<EntityRect>(
+        Rect(
+            Vec3(0.0f, 0.0f, 0.0f),
+            Vec3(555.0f, 0.0f, 0.0f),
+            Vec3(555.0f, 0.0f, 555.0f),
+            Vec3(0.0f, 0.0f, 555.0f)
+        ),
+        white
+    ));
+    // Ceiling
+    entities.push_back(std::make_shared<EntityRect>(
+        Rect(
+            Vec3(0.0f, 555.0f, 0.0f),
+            Vec3(555.0f, 555.0f, 0.0f),
+            Vec3(555.0f, 555.0f, 555.0f),
+            Vec3(0.0f, 555.0f, 555.0f)
+        ),
+        white
+    ));
+    // Back wall
+    entities.push_back(std::make_shared<EntityRect>(
+        Rect(
+            Vec3(0.0f, 0.0f, 555.0f),
+            Vec3(555.0f, 0.0f, 555.0f),
+            Vec3(555.0f, 555.0f, 555.0f),
+            Vec3(0.0f, 555.0f, 555.0f)
+        ),
+        white
+    ));
+    // Top light
+    entities.push_back(std::make_shared<EntityRect>(
+        Rect(
+            Vec3(213.0f, 554.0f, 227.0f),
+            Vec3(343.0f, 554.0f, 227.0f),
+            Vec3(343.0f, 554.0f, 332.0f),
+            Vec3(213.0f, 555.0f, 332.0f)
+        ),
+        light
+    ));
+}
+
 const char* getFilePathForScene(SceneID id) {
     if (id == SceneID::RandomSpheres) {
         return ".output/random-spheres.png";
@@ -197,6 +270,10 @@ const char* getFilePathForScene(SceneID id) {
         return ".output/lights-tests.png";
     }
 
+    if (id == SceneID::CornellBox) {
+        return ".output/cornell-box.png";
+    }
+
     return ".output/image.png";
 }
 
@@ -204,7 +281,7 @@ int main(int argc, char* argv[]) {
     const SceneID sceneId = parseScene(argc, argv);
     const Quality quality = parseQuality(argc, argv);
 
-    const float aspectRatio = 16.0f / 9.0f;
+    float aspectRatio = 16.0f / 9.0f;
 
     Color background(0.0f, 0.0f, 0.0f);
     Vec3 camPos;
@@ -232,11 +309,18 @@ int main(int argc, char* argv[]) {
         texturesTest(entities);
     }
     else if (sceneId == SceneID::LightTest) {
-        //background = Color(0.7f, 0.8f, 1.0f);
         camPos = Vec3(26.0f, 3.0f, 6.0f);
         camTarget = Vec3(0.0f, 2.0f, 0.0f);
 
         lightsTest(entities);
+    }
+    else if (sceneId == SceneID::CornellBox) {
+        aspectRatio = 1.0f;
+        camPos = Vec3(278.0f, 278.0f, -800.0f);
+        camTarget = Vec3(278.0f, 278.0f, 0.0f);
+        vFov = 40.0f;
+
+        cornellBox(entities);
     }
 
     Camera camera(vFov, aspectRatio, aperture, focusDistance, shutterTime);

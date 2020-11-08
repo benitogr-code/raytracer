@@ -80,9 +80,28 @@ bool EntityBox::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) con
 }
 
 bool EntityBox::getAABB(float t0, float t1, AABB& bbox) const {
-    auto worldMin = worldTM() * Vec4(_min, 1.0f);
-    auto worldMax = worldTM() * Vec4(_max, 1.0f);
-    bbox = AABB(worldMin.toVec3(), worldMax.toVec3());
+    const Vec3 points[8] = {
+        (worldTM() * Vec4(_min.x, _min.y, _min.z, 1.0f)).toVec3(),
+        (worldTM() * Vec4(_max.x, _min.y, _min.z, 1.0f)).toVec3(),
+        (worldTM() * Vec4(_max.x, _max.y, _min.z, 1.0f)).toVec3(),
+        (worldTM() * Vec4(_min.x, _max.y, _min.z, 1.0f)).toVec3(),
+        (worldTM() * Vec4(_min.x, _min.y, _max.z, 1.0f)).toVec3(),
+        (worldTM() * Vec4(_max.x, _min.y, _max.z, 1.0f)).toVec3(),
+        (worldTM() * Vec4(_max.x, _max.y, _max.z, 1.0f)).toVec3(),
+        (worldTM() * Vec4(_min.x, _max.y, _max.z, 1.0f)).toVec3(),
+    };
+
+    Vec3 min = points[0];
+    Vec3 max = points[0];
+
+    for (int i = 1; i < 8; ++i) {
+        for (int j = 0; j < 3; j++) {
+            min._v[j] = Math::min(min._v[j], points[i]._v[j]);
+            max._v[j] = Math::max(max._v[j], points[i]._v[j]);
+        }
+    }
+
+    bbox = AABB(min, max);
 
     return true;
 }

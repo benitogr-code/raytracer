@@ -9,40 +9,23 @@ class Entity : public IHittable {
 public:
     Entity(IMaterialPtr material)
     : _material(material)
-    , _worldTM(Mat4x4::Identity())
-    , _velocity(0.0f, 0.0f, 0.0f) {}
+    , _worldTM(Mat4x4::Identity()) {}
 
     Entity(const Vec3& pos, IMaterialPtr material)
     : _material(material)
-    , _worldTM(Mat4x4::Translation(pos))
-    , _velocity(0.0f, 0.0f, 0.0f) {}
+    , _worldTM(Mat4x4::Translation(pos)) {}
 
     void setWorldTM(const Mat4x4& m) {
         _worldTM = m;
         onWorldTMChanged(m);
     }
 
-    void setVelocity(const Vec3& velocity) {
-        _velocity = velocity;
-    };
-
 protected:
     virtual void onWorldTMChanged(const Mat4x4& m) {}
-
-    const IMaterialPtr& material() const {
-        return _material;
-    }
-    const Mat4x4& worldTM() const {
-        return _worldTM;
-    }
-    const Vec3& velocity() const {
-        return _velocity;
-    }
 
 protected:
     IMaterialPtr _material;
     Mat4x4 _worldTM;
-    Vec3 _velocity;
 };
 
 typedef std::shared_ptr<Entity> EntityPtr;

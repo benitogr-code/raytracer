@@ -69,14 +69,14 @@ bool Box::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const {
 
 bool Box::getAABB(float t0, float t1, AABB& bbox) const {
     const Vec3 points[8] = {
-        (worldTM() * Vec4(_min.x, _min.y, _min.z, 1.0f)).toVec3(),
-        (worldTM() * Vec4(_max.x, _min.y, _min.z, 1.0f)).toVec3(),
-        (worldTM() * Vec4(_max.x, _max.y, _min.z, 1.0f)).toVec3(),
-        (worldTM() * Vec4(_min.x, _max.y, _min.z, 1.0f)).toVec3(),
-        (worldTM() * Vec4(_min.x, _min.y, _max.z, 1.0f)).toVec3(),
-        (worldTM() * Vec4(_max.x, _min.y, _max.z, 1.0f)).toVec3(),
-        (worldTM() * Vec4(_max.x, _max.y, _max.z, 1.0f)).toVec3(),
-        (worldTM() * Vec4(_min.x, _max.y, _max.z, 1.0f)).toVec3(),
+        (_worldTM * Vec4(_min.x, _min.y, _min.z, 1.0f)).toVec3(),
+        (_worldTM * Vec4(_max.x, _min.y, _min.z, 1.0f)).toVec3(),
+        (_worldTM * Vec4(_max.x, _max.y, _min.z, 1.0f)).toVec3(),
+        (_worldTM * Vec4(_min.x, _max.y, _min.z, 1.0f)).toVec3(),
+        (_worldTM * Vec4(_min.x, _min.y, _max.z, 1.0f)).toVec3(),
+        (_worldTM * Vec4(_max.x, _min.y, _max.z, 1.0f)).toVec3(),
+        (_worldTM * Vec4(_max.x, _max.y, _max.z, 1.0f)).toVec3(),
+        (_worldTM * Vec4(_min.x, _max.y, _max.z, 1.0f)).toVec3(),
     };
 
     Vec3 min = points[0];

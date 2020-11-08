@@ -26,7 +26,7 @@ bool Sphere::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const 
         outHit.t = t1;
         outHit.normal = frontFace ? normal : -normal;
         outHit.frontFace = frontFace;
-        outHit.material = material();
+        outHit.material = _material;
         getUVCoords(normal, outHit.u, outHit.v);
 
         return true;
@@ -42,7 +42,7 @@ bool Sphere::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const 
         outHit.t = t2;
         outHit.normal = frontFace ? normal : -normal;
         outHit.frontFace = frontFace;
-        outHit.material = material();
+        outHit.material = _material;
         getUVCoords(normal, outHit.u, outHit.v);
 
         return true;
@@ -65,7 +65,7 @@ bool Sphere::getAABB(float t0, float t1, AABB& bbox) const {
 
 Vec3 Sphere::getWorldPos(float time) const {
     auto pos = _worldTM.getTranslation();
-    return pos + (velocity() * time);
+    return pos + (_velocity * time);
 }
 
 void Sphere::getUVCoords(const Vec3& p, float& u, float& v) const {

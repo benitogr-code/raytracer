@@ -22,7 +22,7 @@ public:
 protected:
     void computeRect() {
         for (int i = 0; i < 4; ++i) {
-            _worldPoints[i] = (worldTM() * Vec4(_points[i], 1.0f)).toVec3();
+            _worldPoints[i] = (_worldTM * Vec4(_points[i], 1.0f)).toVec3();
         }
         auto u = Vec3::normalize(_worldPoints[1]-_worldPoints[0]);
         auto v = Vec3::normalize(_worldPoints[2]-_worldPoints[0]);

@@ -32,7 +32,7 @@ bool Rect::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const {
     outHit.t = t;
     outHit.normal = frontFace ? _worldNormal : -_worldNormal;
     outHit.frontFace = frontFace;
-    outHit.material = material();
+    outHit.material = _material;
     outHit.u = 0.5f; // TODO
     outHit.v = 0.5f;
 

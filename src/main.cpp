@@ -76,8 +76,6 @@ Quality parseQuality(int argc, char* argv[]) {
 }
 
 void randomSpheres(std::vector<IHittablePtr>& entities) {
-    entities.clear();
-
     ITexturePtr checker = std::make_shared<CheckerTexture>(Color(0.2f, 0.3f, 0.1f), Color(0.9f, 0.9f, 0.9f));
     IMaterialPtr materialGround = std::make_shared<Lambertian>(checker);
 
@@ -140,8 +138,6 @@ void randomSpheres(std::vector<IHittablePtr>& entities) {
 }
 
 void texturesTest(std::vector<IHittablePtr>& entities) {
-    entities.clear();
-
     auto earthTexture = std::make_shared<ImageTexture>("resources/earthmap.jpg");
     auto noiseTexture = std::make_shared<NoiseTexture>(4.0f);
 
@@ -160,8 +156,6 @@ void texturesTest(std::vector<IHittablePtr>& entities) {
 }
 
 void lightsTest(std::vector<IHittablePtr>& entities) {
-    entities.clear();
-
     auto noiseTexture = std::make_shared<NoiseTexture>(4.0f);
 
     entities.push_back(std::make_shared<EntitySphere>(
@@ -249,10 +243,10 @@ void cornellBox(std::vector<IHittablePtr>& entities) {
     // Top light
     entities.push_back(std::make_shared<EntityRect>(
         Rect(
-            Vec3(213.0f, 554.0f, 227.0f),
-            Vec3(343.0f, 554.0f, 227.0f),
-            Vec3(343.0f, 554.0f, 332.0f),
-            Vec3(213.0f, 555.0f, 332.0f)
+            Vec3(200.0f, 554.0f, 215.0f),
+            Vec3(356.0f, 554.0f, 215.0f),
+            Vec3(356.0f, 554.0f, 344.0f),
+            Vec3(200.0f, 554.0f, 344.0f)
         ),
         matLight
     ));

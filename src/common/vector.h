@@ -119,6 +119,30 @@ inline Vec3 operator*(float f, const Vec3 &v) {
     return Vec3(f*v.x, f*v.y, f*v.z);
 }
 
+// Vec4 ///////////
+struct Vec4 {
+    Vec4()
+    : _v{0.0f, 0.0f, 0.0f, 0.0f} {
+    }
+
+    Vec4(float _x, float _y, float _z, float _w)
+    : _v{_x, _y, _z, _w} {
+    }
+
+    Vec4(const Vec3& vec3, float _w)
+    : _v{vec3.x, vec3.y, vec3.z, _w} {
+    }
+
+    Vec3 toVec3() const {
+        return Vec3(x, y, z);
+    }
+
+    union {
+        struct { float x, y, z, w; };
+        float _v[4];
+    };
+};
+
 // Utilities
 
 namespace VectorUtils {

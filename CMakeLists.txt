@@ -18,6 +18,7 @@ set(APP_SOURCES
     src/common/imageBuffer.h
     src/common/material.h
     src/common/math.h
+    src/common/matrix.h
     src/common/perlin.h
     src/common/stbHelper.h
     src/common/stbHelper.cpp
@@ -35,15 +36,17 @@ set(APP_SOURCES
     src/scene/textures/image.h
     src/scene/textures/noise.h
     src/scene/textures/solidColor.h
+    src/scene/box.h
+    src/scene/box.cpp
     src/scene/bvh.h
     src/scene/bvh.cpp
     src/scene/camera.h
     src/scene/entity.h
-    src/scene/entityRect.h
-    src/scene/entityRect.cpp
-    src/scene/entitySphere.h
-    src/scene/entitySphere.cpp
+    src/scene/rect.h
+    src/scene/rect.cpp
     src/scene/scene.h
+    src/scene/sphere.h
+    src/scene/sphere.cpp
     src/main.cpp
     src/renderer.h
     src/renderer.cpp

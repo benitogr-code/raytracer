@@ -11,14 +11,16 @@
 #include "scene/textures/noise.h"
 #include "scene/camera.h"
 #include "scene/scene.h"
-#include "scene/entityRect.h"
-#include "scene/entitySphere.h"
+#include "scene/box.h"
+#include "scene/rect.h"
+#include "scene/sphere.h"
 #include "renderer.h"
 
 enum class SceneID {
     RandomSpheres,
     TexturesText,
-    LightTest
+    LightTest,
+    CornellBox
 };
 
 enum class Quality {
@@ -43,6 +45,10 @@ SceneID parseScene(int argc, char* argv[]) {
 
     if (strcmp(scene, "lights") == 0) {
         return SceneID::LightTest;
+    }
+
+    if (strcmp(scene, "cornellbox") == 0) {
+        return SceneID::CornellBox;
     }
 
     return SceneID::RandomSpheres;
@@ -70,14 +76,11 @@ Quality parseQuality(int argc, char* argv[]) {
 }
 
 void randomSpheres(std::vector<IHittablePtr>& entities) {
-    entities.clear();
-
     ITexturePtr checker = std::make_shared<CheckerTexture>(Color(0.2f, 0.3f, 0.1f), Color(0.9f, 0.9f, 0.9f));
     IMaterialPtr materialGround = std::make_shared<Lambertian>(checker);
 
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(0.0f, -1000.0f, 0.0f), 1000.0f),
-        materialGround
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(0.0f, -1000.0f, 0.0f), 1000.0f, materialGround
     ));
 
     for (int i = -11; i < 11; i++) {
@@ -108,80 +111,137 @@ void randomSpheres(std::vector<IHittablePtr>& entities) {
                 materialSphere = std::make_shared<Dielectric>(1.5f);
             }
 
-            auto sphere = std::make_shared<EntitySphere>(Sphere(position, 0.2f), materialSphere);
+            auto sphere = std::make_shared<Sphere>(position, 0.2f, materialSphere);
             sphere->setVelocity(velocity);
             entities.push_back(sphere);
         }
     }
 
     IMaterialPtr material1 = std::make_shared<Dielectric>(1.5f);
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(0.0f, 1.0f, 0.0f), 1.0f),
-        material1
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(0.0f, 1.0f, 0.0f), 1.0f, material1
     ));
 
     IMaterialPtr material2 = std::make_shared<Lambertian>(Color(0.4f, 0.2f, 0.1f));
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(-4.0f, 1.0f, 0.0f), 1.0f),
-        material2
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(-4.0f, 1.0f, 0.0f), 1.0f, material2
     ));
 
     IMaterialPtr material3 = std::make_shared<Metal>(Color(0.7f, 0.6f, 0.5f), 0.0f);
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(4.0f, 1.0f, 0.0f), 1.0f),
-        material3
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(4.0f, 1.0f, 0.0f), 1.0f, material3
     ));
 }
 
 void texturesTest(std::vector<IHittablePtr>& entities) {
-    entities.clear();
-
     auto earthTexture = std::make_shared<ImageTexture>("resources/earthmap.jpg");
     auto noiseTexture = std::make_shared<NoiseTexture>(4.0f);
 
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(0.0f, -1000.0f, 0.0f), 1000.0f),
-        std::make_shared<Metal>(Color(0.7f, 0.7f, 0.6f), 0.01f)
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Metal>(Color(0.7f, 0.7f, 0.6f), 0.01f)
     ));
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(-2.0f, 2.0f, 0.0f), 1.9f),
-        std::make_shared<Lambertian>(earthTexture)
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(-2.0f, 2.0f, 0.0f), 1.9f, std::make_shared<Lambertian>(earthTexture)
     ));
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(2.0f, 2.0f, 0.0f), 1.9f),
-        std::make_shared<Lambertian>(noiseTexture)
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(2.0f, 2.0f, 0.0f), 1.9f, std::make_shared<Lambertian>(noiseTexture)
     ));
 }
 
 void lightsTest(std::vector<IHittablePtr>& entities) {
-    entities.clear();
-
     auto noiseTexture = std::make_shared<NoiseTexture>(4.0f);
 
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(0.0f, -1000.0f, 0.0f), 1000.0f),
-        std::make_shared<Lambertian>(Color(0.5f, 0.5f, 0.5f))
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(Color(0.5f, 0.5f, 0.5f))
     ));
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(0.0f, 2.0f, 0.0f), 2.0f),
-        std::make_shared<Lambertian>(noiseTexture)
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(0.0f, 2.0f, 0.0f), 2.0f, std::make_shared<Lambertian>(noiseTexture)
     ));
 
     // Light 1
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(-2.0f, 4.0f, 4.0f), 1.0f),
-        std::make_shared<DiffuseLight>(Color(0.8f, 0.8f, 0.2f))
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(-2.0f, 4.0f, 4.0f), 1.0f, std::make_shared<DiffuseLight>(Color(0.8f, 0.8f, 0.2f))
     ));
     // Light 2
-    entities.push_back(std::make_shared<EntityRect>(
-        Rect(
-            Vec3(1.0f, 0.5f, -2.2f),
-            Vec3(3.0f, 0.5f, -2.2f),
-            Vec3(3.0f, 2.5f, -2.2f),
-            Vec3(1.0f, 2.5f, -2.2f)
-        ),
+    entities.push_back(std::make_shared<Rect>(
+        Vec3(1.0f, 0.5f, -2.2f),
+        Vec3(3.0f, 0.5f, -2.2f),
+        Vec3(3.0f, 2.5f, -2.2f),
+        Vec3(1.0f, 2.5f, -2.2f),
         std::make_shared<DiffuseLight>(Color(1.0f, 1.0f, 1.0f))
     ));
+}
+
+void cornellBox(std::vector<IHittablePtr>& entities) {
+    auto matRed   = std::make_shared<Lambertian>(Color(0.65f, 0.05f, 0.05f));
+    auto matWhite = std::make_shared<Lambertian>(Color(0.73f, 0.73f, 0.73f));
+    auto matGreen = std::make_shared<Lambertian>(Color(0.12f, 0.45f, 0.15f));
+    auto matLight = std::make_shared<DiffuseLight>(Color(15.0f, 15.0f, 15.0f));
+
+    // Left wall
+    entities.push_back(std::make_shared<Rect>(
+        Vec3(555.0f, 0.0f, 0.0f),
+        Vec3(555.0f, 0.0f, 555.0f),
+        Vec3(555.0f, 555.0f, 555.0f),
+        Vec3(555.0f, 555.0f, 0.0f),
+        matGreen
+    ));
+    // Right wall
+    entities.push_back(std::make_shared<Rect>(
+        Vec3(0.0f, 0.0f, 0.0f),
+        Vec3(0.0f, 0.0f, 555.0f),
+        Vec3(0.0f, 555.0f, 555.0f),
+        Vec3(0.0f, 555.0f, 0.0f),
+        matRed
+    ));
+    // Floor
+    entities.push_back(std::make_shared<Rect>(
+        Vec3(0.0f, 0.0f, 0.0f),
+        Vec3(555.0f, 0.0f, 0.0f),
+        Vec3(555.0f, 0.0f, 555.0f),
+        Vec3(0.0f, 0.0f, 555.0f),
+        matWhite
+    ));
+    // Ceiling
+    entities.push_back(std::make_shared<Rect>(
+        Vec3(0.0f, 555.0f, 0.0f),
+        Vec3(555.0f, 555.0f, 0.0f),
+        Vec3(555.0f, 555.0f, 555.0f),
+        Vec3(0.0f, 555.0f, 555.0f),
+        matWhite
+    ));
+    // Back wall
+    entities.push_back(std::make_shared<Rect>(
+        Vec3(0.0f, 0.0f, 555.0f),
+        Vec3(555.0f, 0.0f, 555.0f),
+        Vec3(555.0f, 555.0f, 555.0f),
+        Vec3(0.0f, 555.0f, 555.0f),
+        matWhite
+    ));
+    // Top light
+    entities.push_back(std::make_shared<Rect>(
+        Vec3(200.0f, 554.0f, 215.0f),
+        Vec3(356.0f, 554.0f, 215.0f),
+        Vec3(356.0f, 554.0f, 344.0f),
+        Vec3(200.0f, 554.0f, 344.0f),
+        matLight
+    ));
+
+    // Boxes
+    auto box1 = std::make_shared<Box>(
+        Vec3(0.0f, 0.0f, 0.0f), Vec3(165.0f, 330.0f, 165.0f),
+        matWhite
+    );
+    box1->setWorldTM(Mat4x4::RotateY(Mat4x4::Translation(Vec3(200.0f, 0.0f, 345.0f)), 15.0f));
+
+    auto box2 = std::make_shared<Box>(
+        Vec3(0.0f, 0.0f, 0.0f), Vec3(165.0f, 165.0f, 165.0f),
+        matWhite
+    );
+    box2->setWorldTM(Mat4x4::RotateY(Mat4x4::Translation(Vec3(160.0f, 0.0f, 60.0f)), -18.0f));
+
+    entities.push_back(box1);
+    entities.push_back(box2);
 }
 
 const char* getFilePathForScene(SceneID id) {
@@ -197,6 +257,10 @@ const char* getFilePathForScene(SceneID id) {
         return ".output/lights-tests.png";
     }
 
+    if (id == SceneID::CornellBox) {
+        return ".output/cornell-box.png";
+    }
+
     return ".output/image.png";
 }
 
@@ -204,7 +268,7 @@ int main(int argc, char* argv[]) {
     const SceneID sceneId = parseScene(argc, argv);
     const Quality quality = parseQuality(argc, argv);
 
-    const float aspectRatio = 16.0f / 9.0f;
+    float aspectRatio = 16.0f / 9.0f;
 
     Color background(0.0f, 0.0f, 0.0f);
     Vec3 camPos;
@@ -232,11 +296,18 @@ int main(int argc, char* argv[]) {
         texturesTest(entities);
     }
     else if (sceneId == SceneID::LightTest) {
-        //background = Color(0.7f, 0.8f, 1.0f);
         camPos = Vec3(26.0f, 3.0f, 6.0f);
         camTarget = Vec3(0.0f, 2.0f, 0.0f);
 
         lightsTest(entities);
+    }
+    else if (sceneId == SceneID::CornellBox) {
+        aspectRatio = 1.0f;
+        camPos = Vec3(278.0f, 278.0f, -800.0f);
+        camTarget = Vec3(278.0f, 278.0f, 0.0f);
+        vFov = 40.0f;
+
+        cornellBox(entities);
     }
 
     Camera camera(vFov, aspectRatio, aperture, focusDistance, shutterTime);

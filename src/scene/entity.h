@@ -3,26 +3,29 @@
 #include <memory>
 
 #include "../common/hittable.h"
+#include "../common/matrix.h"
 
 class Entity : public IHittable {
 public:
     Entity(IMaterialPtr material)
-        : _material(material)
-        , _velocity(0.0f, 0.0f, 0.0f) {}
+    : _material(material)
+    , _worldTM(Mat4x4::Identity()) {}
 
-    void setVelocity(const Vec3& velocity) {
-        _velocity = velocity;
-    };
+    Entity(const Vec3& pos, IMaterialPtr material)
+    : _material(material)
+    , _worldTM(Mat4x4::Translation(pos)) {}
+
+    void setWorldTM(const Mat4x4& m) {
+        _worldTM = m;
+        onWorldTMChanged(m);
+    }
 
 protected:
-    const IMaterialPtr& material() const {
-        return _material;
-    }
-    const Vec3& velocity() const {
-        return _velocity;
-    }
+    virtual void onWorldTMChanged(const Mat4x4& m) {}
 
-private:
+protected:
     IMaterialPtr _material;
-    Vec3 _velocity;
+    Mat4x4 _worldTM;
 };
+
+typedef std::shared_ptr<Entity> EntityPtr;

@@ -2,7 +2,7 @@
 
 bool EntitySphere::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const {
     // Resolve quadratic equation terms
-    const Vec3 spherePos = getPosition(ray.time);
+    const Vec3 spherePos = getWorldPos(ray.time);
     const Vec3 sphereToRayOrigin = ray.origin - spherePos;
     const float a = Vec3::dot(ray.direction, ray.direction);
     const float b = 2.0f * Vec3::dot(ray.direction, sphereToRayOrigin);
@@ -53,8 +53,8 @@ bool EntitySphere::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) 
 
 bool EntitySphere::getAABB(float t0, float t1, AABB& bbox) const {
     const Vec3 radius(_sphere.radius, _sphere.radius, _sphere.radius);
-    const Vec3 p0 = getPosition(t0);
-    const Vec3 p1 = getPosition(t1);
+    const Vec3 p0 = getWorldPos(t0);
+    const Vec3 p1 = getWorldPos(t1);
 
     const AABB box0(p0-radius, p0+radius);
     const AABB box1(p1-radius, p1+radius);
@@ -63,7 +63,7 @@ bool EntitySphere::getAABB(float t0, float t1, AABB& bbox) const {
     return true;
 }
 
-Vec3 EntitySphere::getPosition(float time) const {
+Vec3 EntitySphere::getWorldPos(float time) const {
     auto pos = worldTM() * Vec4(_sphere.center, 1.0f);
     return pos.toVec3() + (velocity() * time);
 }

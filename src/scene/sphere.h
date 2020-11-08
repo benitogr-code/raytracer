@@ -2,21 +2,11 @@
 
 #include "entity.h"
 
-struct Sphere {
-    Sphere() {}
-    Sphere(const Vec3& _center, float _radius)
-        : center(_center)
-        , radius(_radius) {}
-
-    Vec3  center;
-    float radius;
-};
-
-class EntitySphere : public Entity {
+class Sphere : public Entity {
 public:
-    EntitySphere(const Sphere& sphere, IMaterialPtr material)
-    : Entity(material) {
-        _sphere = sphere;
+    Sphere(const Vec3& pos, float radius, IMaterialPtr material)
+    : Entity(pos, material)
+    , _radius(radius) {
     }
 
     // IHittable
@@ -29,5 +19,5 @@ private:
     void getUVCoords(const Vec3& p, float& u, float& v) const;
 
 private:
-    Sphere _sphere;
+    float _radius;
 };

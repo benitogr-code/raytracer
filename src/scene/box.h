@@ -3,9 +3,9 @@
 #include <vector>
 #include "entity.h"
 
-class EntityBox : public Entity {
+class Box : public Entity {
 public:
-    EntityBox(const Vec3& p0, const Vec3& p1, IMaterialPtr material);
+    Box(const Vec3& p0, const Vec3& p1, IMaterialPtr material);
 
     // IHittable
     virtual bool hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const override;

@@ -11,9 +11,9 @@
 #include "scene/textures/noise.h"
 #include "scene/camera.h"
 #include "scene/scene.h"
-#include "scene/entityBox.h"
-#include "scene/entityRect.h"
-#include "scene/entitySphere.h"
+#include "scene/box.h"
+#include "scene/rect.h"
+#include "scene/sphere.h"
 #include "renderer.h"
 
 enum class SceneID {
@@ -79,9 +79,8 @@ void randomSpheres(std::vector<IHittablePtr>& entities) {
     ITexturePtr checker = std::make_shared<CheckerTexture>(Color(0.2f, 0.3f, 0.1f), Color(0.9f, 0.9f, 0.9f));
     IMaterialPtr materialGround = std::make_shared<Lambertian>(checker);
 
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(0.0f, -1000.0f, 0.0f), 1000.0f),
-        materialGround
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(0.0f, -1000.0f, 0.0f), 1000.0f, materialGround
     ));
 
     for (int i = -11; i < 11; i++) {
@@ -112,28 +111,25 @@ void randomSpheres(std::vector<IHittablePtr>& entities) {
                 materialSphere = std::make_shared<Dielectric>(1.5f);
             }
 
-            auto sphere = std::make_shared<EntitySphere>(Sphere(position, 0.2f), materialSphere);
+            auto sphere = std::make_shared<Sphere>(position, 0.2f, materialSphere);
             sphere->setVelocity(velocity);
             entities.push_back(sphere);
         }
     }
 
     IMaterialPtr material1 = std::make_shared<Dielectric>(1.5f);
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(0.0f, 1.0f, 0.0f), 1.0f),
-        material1
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(0.0f, 1.0f, 0.0f), 1.0f, material1
     ));
 
     IMaterialPtr material2 = std::make_shared<Lambertian>(Color(0.4f, 0.2f, 0.1f));
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(-4.0f, 1.0f, 0.0f), 1.0f),
-        material2
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(-4.0f, 1.0f, 0.0f), 1.0f, material2
     ));
 
     IMaterialPtr material3 = std::make_shared<Metal>(Color(0.7f, 0.6f, 0.5f), 0.0f);
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(4.0f, 1.0f, 0.0f), 1.0f),
-        material3
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(4.0f, 1.0f, 0.0f), 1.0f, material3
     ));
 }
 
@@ -141,45 +137,37 @@ void texturesTest(std::vector<IHittablePtr>& entities) {
     auto earthTexture = std::make_shared<ImageTexture>("resources/earthmap.jpg");
     auto noiseTexture = std::make_shared<NoiseTexture>(4.0f);
 
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(0.0f, -1000.0f, 0.0f), 1000.0f),
-        std::make_shared<Metal>(Color(0.7f, 0.7f, 0.6f), 0.01f)
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Metal>(Color(0.7f, 0.7f, 0.6f), 0.01f)
     ));
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(-2.0f, 2.0f, 0.0f), 1.9f),
-        std::make_shared<Lambertian>(earthTexture)
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(-2.0f, 2.0f, 0.0f), 1.9f, std::make_shared<Lambertian>(earthTexture)
     ));
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(2.0f, 2.0f, 0.0f), 1.9f),
-        std::make_shared<Lambertian>(noiseTexture)
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(2.0f, 2.0f, 0.0f), 1.9f, std::make_shared<Lambertian>(noiseTexture)
     ));
 }
 
 void lightsTest(std::vector<IHittablePtr>& entities) {
     auto noiseTexture = std::make_shared<NoiseTexture>(4.0f);
 
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(0.0f, -1000.0f, 0.0f), 1000.0f),
-        std::make_shared<Lambertian>(Color(0.5f, 0.5f, 0.5f))
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(Color(0.5f, 0.5f, 0.5f))
     ));
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(0.0f, 2.0f, 0.0f), 2.0f),
-        std::make_shared<Lambertian>(noiseTexture)
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(0.0f, 2.0f, 0.0f), 2.0f, std::make_shared<Lambertian>(noiseTexture)
     ));
 
     // Light 1
-    entities.push_back(std::make_shared<EntitySphere>(
-        Sphere(Vec3(-2.0f, 4.0f, 4.0f), 1.0f),
-        std::make_shared<DiffuseLight>(Color(0.8f, 0.8f, 0.2f))
+    entities.push_back(std::make_shared<Sphere>(
+        Vec3(-2.0f, 4.0f, 4.0f), 1.0f, std::make_shared<DiffuseLight>(Color(0.8f, 0.8f, 0.2f))
     ));
     // Light 2
-    entities.push_back(std::make_shared<EntityRect>(
-        Rect(
-            Vec3(1.0f, 0.5f, -2.2f),
-            Vec3(3.0f, 0.5f, -2.2f),
-            Vec3(3.0f, 2.5f, -2.2f),
-            Vec3(1.0f, 2.5f, -2.2f)
-        ),
+    entities.push_back(std::make_shared<Rect>(
+        Vec3(1.0f, 0.5f, -2.2f),
+        Vec3(3.0f, 0.5f, -2.2f),
+        Vec3(3.0f, 2.5f, -2.2f),
+        Vec3(1.0f, 2.5f, -2.2f),
         std::make_shared<DiffuseLight>(Color(1.0f, 1.0f, 1.0f))
     ));
 }
@@ -191,74 +179,62 @@ void cornellBox(std::vector<IHittablePtr>& entities) {
     auto matLight = std::make_shared<DiffuseLight>(Color(15.0f, 15.0f, 15.0f));
 
     // Left wall
-    entities.push_back(std::make_shared<EntityRect>(
-        Rect(
-            Vec3(555.0f, 0.0f, 0.0f),
-            Vec3(555.0f, 0.0f, 555.0f),
-            Vec3(555.0f, 555.0f, 555.0f),
-            Vec3(555.0f, 555.0f, 0.0f)
-        ),
+    entities.push_back(std::make_shared<Rect>(
+        Vec3(555.0f, 0.0f, 0.0f),
+        Vec3(555.0f, 0.0f, 555.0f),
+        Vec3(555.0f, 555.0f, 555.0f),
+        Vec3(555.0f, 555.0f, 0.0f),
         matGreen
     ));
     // Right wall
-    entities.push_back(std::make_shared<EntityRect>(
-        Rect(
-            Vec3(0.0f, 0.0f, 0.0f),
-            Vec3(0.0f, 0.0f, 555.0f),
-            Vec3(0.0f, 555.0f, 555.0f),
-            Vec3(0.0f, 555.0f, 0.0f)
-        ),
+    entities.push_back(std::make_shared<Rect>(
+        Vec3(0.0f, 0.0f, 0.0f),
+        Vec3(0.0f, 0.0f, 555.0f),
+        Vec3(0.0f, 555.0f, 555.0f),
+        Vec3(0.0f, 555.0f, 0.0f),
         matRed
     ));
     // Floor
-    entities.push_back(std::make_shared<EntityRect>(
-        Rect(
-            Vec3(0.0f, 0.0f, 0.0f),
-            Vec3(555.0f, 0.0f, 0.0f),
-            Vec3(555.0f, 0.0f, 555.0f),
-            Vec3(0.0f, 0.0f, 555.0f)
-        ),
+    entities.push_back(std::make_shared<Rect>(
+        Vec3(0.0f, 0.0f, 0.0f),
+        Vec3(555.0f, 0.0f, 0.0f),
+        Vec3(555.0f, 0.0f, 555.0f),
+        Vec3(0.0f, 0.0f, 555.0f),
         matWhite
     ));
     // Ceiling
-    entities.push_back(std::make_shared<EntityRect>(
-        Rect(
-            Vec3(0.0f, 555.0f, 0.0f),
-            Vec3(555.0f, 555.0f, 0.0f),
-            Vec3(555.0f, 555.0f, 555.0f),
-            Vec3(0.0f, 555.0f, 555.0f)
-        ),
+    entities.push_back(std::make_shared<Rect>(
+        Vec3(0.0f, 555.0f, 0.0f),
+        Vec3(555.0f, 555.0f, 0.0f),
+        Vec3(555.0f, 555.0f, 555.0f),
+        Vec3(0.0f, 555.0f, 555.0f),
         matWhite
     ));
     // Back wall
-    entities.push_back(std::make_shared<EntityRect>(
-        Rect(
-            Vec3(0.0f, 0.0f, 555.0f),
-            Vec3(555.0f, 0.0f, 555.0f),
-            Vec3(555.0f, 555.0f, 555.0f),
-            Vec3(0.0f, 555.0f, 555.0f)
-        ),
+    entities.push_back(std::make_shared<Rect>(
+        Vec3(0.0f, 0.0f, 555.0f),
+        Vec3(555.0f, 0.0f, 555.0f),
+        Vec3(555.0f, 555.0f, 555.0f),
+        Vec3(0.0f, 555.0f, 555.0f),
         matWhite
     ));
     // Top light
-    entities.push_back(std::make_shared<EntityRect>(
-        Rect(
-            Vec3(200.0f, 554.0f, 215.0f),
-            Vec3(356.0f, 554.0f, 215.0f),
-            Vec3(356.0f, 554.0f, 344.0f),
-            Vec3(200.0f, 554.0f, 344.0f)
-        ),
+    entities.push_back(std::make_shared<Rect>(
+        Vec3(200.0f, 554.0f, 215.0f),
+        Vec3(356.0f, 554.0f, 215.0f),
+        Vec3(356.0f, 554.0f, 344.0f),
+        Vec3(200.0f, 554.0f, 344.0f),
         matLight
     ));
 
     // Boxes
-    auto box1 = std::make_shared<EntityBox>(
+    auto box1 = std::make_shared<Box>(
         Vec3(0.0f, 0.0f, 0.0f), Vec3(165.0f, 330.0f, 165.0f),
         matWhite
     );
     box1->setWorldTM(Mat4x4::RotateY(Mat4x4::Translation(Vec3(200.0f, 0.0f, 345.0f)), 15.0f));
 
-    auto box2 = std::make_shared<EntityBox>(
+    auto box2 = std::make_shared<Box>(
         Vec3(0.0f, 0.0f, 0.0f), Vec3(165.0f, 165.0f, 165.0f),
         matWhite
     );

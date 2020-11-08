@@ -12,6 +12,14 @@ public:
     virtual bool getAABB(float t0, float t1, AABB& bbox) const override;
     //~IHittable
 
+protected:
+    // Entity
+    virtual void onWorldTMChanged(const Mat4x4& m) override {
+        for (const auto& side : _sides) {
+            side->setWorldTM(m);
+        }
+    }
+
 private:
     Vec3 _min;
     Vec3 _max;

@@ -32,6 +32,8 @@ public:
     //~IHittable
 
 private:
+    Rect getWorldRect() const;
+
     static bool isPointInTriangle(const Vec3& p, const Vec3& v0, const Vec3& v1, const Vec3& v2);
     static bool sameSide(const Vec3 &p1, const Vec3 &p2, const Vec3 &a, const Vec3 &b);
 

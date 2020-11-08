@@ -64,7 +64,8 @@ bool EntitySphere::getAABB(float t0, float t1, AABB& bbox) const {
 }
 
 Vec3 EntitySphere::getPosition(float time) const {
-    return _sphere.center + (velocity() * time);
+    auto pos = worldTM() * Vec4(_sphere.center, 1.0f);
+    return pos.toVec3() + (velocity() * time);
 }
 
 void EntitySphere::getUVCoords(const Vec3& p, float& u, float& v) const {

@@ -80,7 +80,9 @@ bool EntityBox::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) con
 }
 
 bool EntityBox::getAABB(float t0, float t1, AABB& bbox) const {
-    bbox = AABB(_min, _max);
+    auto worldMin = worldTM() * Vec4(_min, 1.0f);
+    auto worldMax = worldTM() * Vec4(_max, 1.0f);
+    bbox = AABB(worldMin.toVec3(), worldMax.toVec3());
 
     return true;
 }

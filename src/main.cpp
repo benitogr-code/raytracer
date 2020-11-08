@@ -258,14 +258,20 @@ void cornellBox(std::vector<IHittablePtr>& entities) {
     ));
 
     // Boxes
-    entities.push_back(std::make_shared<EntityBox>(
-        Vec3(130.0f, 0.0f, 65.0f), Vec3(295.0f, 165.0f, 230.0f),
+    auto box1 = std::make_shared<EntityBox>(
+        Vec3(0.0f, 0.0f, 0.0f), Vec3(165.0f, 330.0f, 165.0f),
         matWhite
-    ));
-    entities.push_back(std::make_shared<EntityBox>(
-        Vec3(265.0f, 0.0f, 295.0f), Vec3(430.0f, 330.0f, 460.0f),
+    );
+    box1->setWorldTM(Mat4x4::RotateY(Mat4x4::Translation(Vec3(200.0f, 0.0f, 345.0f)), 15.0f));
+
+    auto box2 = std::make_shared<EntityBox>(
+        Vec3(0.0f, 0.0f, 0.0f), Vec3(165.0f, 165.0f, 165.0f),
         matWhite
-    ));
+    );
+    box2->setWorldTM(Mat4x4::RotateY(Mat4x4::Translation(Vec3(160.0f, 0.0f, 60.0f)), -18.0f));
+
+    entities.push_back(box1);
+    entities.push_back(box2);
 }
 
 const char* getFilePathForScene(SceneID id) {

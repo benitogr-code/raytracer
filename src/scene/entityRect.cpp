@@ -1,8 +1,9 @@
 #include "entityRect.h"
 
 bool EntityRect::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const {
-    const Vec3 normal = _rect.normal();
-    const Vec3 diff = _rect.p0 - ray.origin;
+    const Rect rect = getWorldRect();
+    const Vec3 normal = rect.normal();
+    const Vec3 diff = rect.p0 - ray.origin;
 
     const float t = Vec3::dot(diff, normal) / Vec3::dot(ray.direction, normal);
 
@@ -10,8 +11,8 @@ bool EntityRect::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) co
         return false;
 
     const auto hitPoint = ray.pointAt(t);
-    const auto inTriangle1 = isPointInTriangle(hitPoint, _rect.p0, _rect.p1, _rect.p2);
-    const auto inTriangle2 = isPointInTriangle(hitPoint, _rect.p0, _rect.p2, _rect.p3);
+    const auto inTriangle1 = isPointInTriangle(hitPoint, rect.p0, rect.p1, rect.p2);
+    const auto inTriangle2 = isPointInTriangle(hitPoint, rect.p0, rect.p2, rect.p3);
 
     if (!inTriangle1 && !inTriangle2)
         return false;
@@ -31,11 +32,12 @@ bool EntityRect::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) co
 
 bool EntityRect::getAABB(float t0, float t1, AABB& bbox) const {
     const Vec3 epsilon(0.0001f, 0.0001f, 0.0001f);
+    const Rect rect = getWorldRect();
 
-    Vec3 min = _rect.p0;
-    Vec3 max = _rect.p0;
+    Vec3 min = rect.p0;
+    Vec3 max = rect.p0;
 
-    const Vec3 points[3] = { _rect.p1, _rect.p2, _rect.p3 };
+    const Vec3 points[3] = { rect.p1, rect.p2, rect.p3 };
     for (int i = 0; i < 3; ++i) {
         for (int j = 0; j < 3; j++) {
             min._v[j] = Math::min(min._v[j], points[i]._v[j]);
@@ -47,6 +49,16 @@ bool EntityRect::getAABB(float t0, float t1, AABB& bbox) const {
 
     return true;
 }
+
+Rect EntityRect::getWorldRect() const {
+    auto p0 = worldTM() * Vec4(_rect.p0, 1.0f);
+    auto p1 = worldTM() * Vec4(_rect.p1, 1.0f);
+    auto p2 = worldTM() * Vec4(_rect.p2, 1.0f);
+    auto p3 = worldTM() * Vec4(_rect.p3, 1.0f);
+
+    return Rect(p0.toVec3(), p1.toVec3(), p2.toVec3(), p3.toVec3());
+}
+
 
 /*static*/ bool EntityRect::isPointInTriangle(const Vec3& p, const Vec3& v0, const Vec3& v1, const Vec3& v2) {
     return sameSide(p, v0, v1, v2) && sameSide(p, v1, v0, v2) && sameSide(p, v2, v0, v1);

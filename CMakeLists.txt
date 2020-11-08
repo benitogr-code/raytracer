@@ -18,6 +18,7 @@ set(APP_SOURCES
     src/common/imageBuffer.h
     src/common/material.h
     src/common/math.h
+    src/common/matrix.h
     src/common/perlin.h
     src/common/stbHelper.h
     src/common/stbHelper.cpp

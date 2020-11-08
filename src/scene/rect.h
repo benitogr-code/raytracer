@@ -16,18 +16,14 @@ public:
 
     // IHittable
     virtual bool hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const override;
-    virtual bool getAABB(float t0, float t1, AABB& bbox) const override;
+    virtual bool getAABB(float t0, float t1, AABB& bbox) const override {
+        bbox = _bbox;
+        return true;
+    }
     //~IHittable
 
 protected:
-    void computeRect() {
-        for (int i = 0; i < 4; ++i) {
-            _worldPoints[i] = (_worldTM * Vec4(_points[i], 1.0f)).toVec3();
-        }
-        auto u = Vec3::normalize(_worldPoints[1]-_worldPoints[0]);
-        auto v = Vec3::normalize(_worldPoints[2]-_worldPoints[0]);
-        _worldNormal = Vec3::normalize(Vec3::cross(u, v));
-    }
+    void computeRect();
 
     // Entity
     virtual void onWorldTMChanged(const Mat4x4& m) override {
@@ -38,4 +34,5 @@ private:
     Vec3 _points[4];
     Vec3 _worldPoints[4];
     Vec3 _worldNormal;
+    AABB _bbox;
 };

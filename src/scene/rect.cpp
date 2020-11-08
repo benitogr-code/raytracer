@@ -39,7 +39,15 @@ bool Rect::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const {
     return true;
 }
 
-bool Rect::getAABB(float t0, float t1, AABB& bbox) const {
+void Rect::computeRect() {
+    for (int i = 0; i < 4; ++i) {
+        _worldPoints[i] = (_worldTM * Vec4(_points[i], 1.0f)).toVec3();
+    }
+
+    auto u = Vec3::normalize(_worldPoints[1]-_worldPoints[0]);
+    auto v = Vec3::normalize(_worldPoints[2]-_worldPoints[0]);
+    _worldNormal = Vec3::normalize(Vec3::cross(u, v));
+
     const Vec3 epsilon(0.0001f, 0.0001f, 0.0001f);
 
     Vec3 min = _worldPoints[0];
@@ -52,7 +60,5 @@ bool Rect::getAABB(float t0, float t1, AABB& bbox) const {
         }
     }
 
-    bbox = AABB(min-epsilon, max+epsilon);
-
-    return true;
+    _bbox = AABB(min-epsilon, max+epsilon);
 }

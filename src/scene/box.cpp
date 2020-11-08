@@ -3,8 +3,8 @@
 
 Box::Box(const Vec3& p0, const Vec3& p1, IMaterialPtr material)
 : Entity(material) {
-    _min = p0;
-    _max = p1;
+    _sourcePoints[0] = p0;
+    _sourcePoints[1] = p1;
 
     _sides.push_back(std::make_shared<Rect>(
         Vec3(p0.x, p0.y, p0.z),
@@ -48,6 +48,8 @@ Box::Box(const Vec3& p0, const Vec3& p1, IMaterialPtr material)
         Vec3(p1.x, p1.y, p0.z),
         material
     ));
+
+    computeBBox();
 }
 
 bool Box::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const {
@@ -67,16 +69,19 @@ bool Box::hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const {
     return registeredHit;
 }
 
-bool Box::getAABB(float t0, float t1, AABB& bbox) const {
+void Box::computeBBox() {
+    const auto p0 = _sourcePoints[0];
+    const auto p1 = _sourcePoints[1];
+
     const Vec3 points[8] = {
-        (_worldTM * Vec4(_min.x, _min.y, _min.z, 1.0f)).toVec3(),
-        (_worldTM * Vec4(_max.x, _min.y, _min.z, 1.0f)).toVec3(),
-        (_worldTM * Vec4(_max.x, _max.y, _min.z, 1.0f)).toVec3(),
-        (_worldTM * Vec4(_min.x, _max.y, _min.z, 1.0f)).toVec3(),
-        (_worldTM * Vec4(_min.x, _min.y, _max.z, 1.0f)).toVec3(),
-        (_worldTM * Vec4(_max.x, _min.y, _max.z, 1.0f)).toVec3(),
-        (_worldTM * Vec4(_max.x, _max.y, _max.z, 1.0f)).toVec3(),
-        (_worldTM * Vec4(_min.x, _max.y, _max.z, 1.0f)).toVec3(),
+        (_worldTM * Vec4(p0.x, p0.y, p0.z, 1.0f)).toVec3(),
+        (_worldTM * Vec4(p1.x, p0.y, p0.z, 1.0f)).toVec3(),
+        (_worldTM * Vec4(p1.x, p1.y, p0.z, 1.0f)).toVec3(),
+        (_worldTM * Vec4(p0.x, p1.y, p0.z, 1.0f)).toVec3(),
+        (_worldTM * Vec4(p0.x, p0.y, p1.z, 1.0f)).toVec3(),
+        (_worldTM * Vec4(p1.x, p0.y, p1.z, 1.0f)).toVec3(),
+        (_worldTM * Vec4(p1.x, p1.y, p1.z, 1.0f)).toVec3(),
+        (_worldTM * Vec4(p0.x, p1.y, p1.z, 1.0f)).toVec3(),
     };
 
     Vec3 min = points[0];
@@ -89,7 +94,5 @@ bool Box::getAABB(float t0, float t1, AABB& bbox) const {
         }
     }
 
-    bbox = AABB(min, max);
-
-    return true;
+    _bbox = AABB(min, max);
 }

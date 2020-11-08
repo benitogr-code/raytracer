@@ -9,19 +9,25 @@ public:
 
     // IHittable
     virtual bool hit(const Ray& ray, float tMin, float tMax, HitInfo& outHit) const override;
-    virtual bool getAABB(float t0, float t1, AABB& bbox) const override;
+    virtual bool getAABB(float t0, float t1, AABB& bbox) const override {
+        bbox = _bbox;
+        return true;
+    }
     //~IHittable
 
 protected:
+    void computeBBox();
+
     // Entity
     virtual void onWorldTMChanged(const Mat4x4& m) override {
         for (const auto& side : _sides) {
             side->setWorldTM(m);
         }
+        computeBBox();
     }
 
 private:
-    Vec3 _min;
-    Vec3 _max;
+    Vec3 _sourcePoints[2];
+    AABB _bbox;
     std::vector<EntityPtr> _sides;
 };

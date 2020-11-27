@@ -2,7 +2,7 @@
 
 A path tracer based on the [Raytracing in one weekend](https://raytracing.github.io/) book series.
 
-The current feature set includes what is covered in the first and part of the second book:
+The feature set includes what is covered in the first two books in the series:
 
 - Geometry: Spheres, Rectangle and boxes.
 - Materials (metal, glass...), multiple Texture types and Light sources.

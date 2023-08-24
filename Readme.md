@@ -11,7 +11,6 @@ The feature set includes what is covered in the first two books in the series:
 
 Additional features:
 - Integrated STB library to generate PNG image output.
-- Full 3D transforms using 4x4 matrices.
 - Multi threaded rendering.
 
 The main executable has multiple scene samples which can be rendered at different quality presets: low, medium and high.
